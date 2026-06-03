@@ -1,0 +1,29 @@
+internal/cobolfmt/packed_test.go
+  s_a05201fcf8e515::t_78c52b5dc50f4b 4,43-44,46,49-55,61-70,76,82,88,114-184,187-191,193-203,213,232-259
+internal/domain/roundtrip_test.go
+  s_a05201fcf8e515::t_ac54ae75728613 326-372
+internal/domain/export.go
+  s_a05201fcf8e515::t_a81fbeee619866 1-797
+internal/cobolfmt/packed.go
+  s_a05201fcf8e515::t_7930c215b5879a 103-110,113,150-157,159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "20336c997113d03c3fc7301a2edd806d78deae47",
+  "prompts": {},
+  "sessions": {
+    "s_a05201fcf8e515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4c54f6c-8922-420d-8eca-b9cae08b0881",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 1006,
+      "total_deletions": 28,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
