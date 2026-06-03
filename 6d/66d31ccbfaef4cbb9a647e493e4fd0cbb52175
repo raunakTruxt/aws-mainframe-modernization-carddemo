@@ -1,0 +1,40 @@
+internal/web/menu/handlers_test.go
+  s_114db9495acd0b::t_7444ea8a511e8d 5
+  s_114db9495acd0b::t_123d4df36274bf 1-4,6-300,303-304,306-313
+  s_114db9495acd0b::t_09451c594e0d87 301-302,305
+go.sum
+  ai_agent 1-2
+go.mod
+  s_114db9495acd0b::t_dd0cd12280185a 6-7
+internal/web/router.go
+  s_114db9495acd0b::t_d9e1fece372c44 1-122
+cmd/web/main.go
+  s_114db9495acd0b::t_ca8a458ed48759 3,7,11-17,28,30,32,38,42-43,46
+  s_114db9495acd0b::t_945fe5285354d7 26-27,29,31,33-37,40
+static/app.css
+  s_114db9495acd0b::t_2024f2d9d574c0 1-164
+internal/web/layout/layout.go
+  s_114db9495acd0b::t_0f39a27e4936dd 1-104
+internal/web/menu/handlers.go
+  s_114db9495acd0b::t_77105b0e61dd52 1-140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "6d66d31ccbfaef4cbb9a647e493e4fd0cbb52175",
+  "prompts": {},
+  "sessions": {
+    "s_114db9495acd0b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "769ffad6-11cf-45f0-9457-cb9a92a37903",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 894,
+      "total_deletions": 28,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
