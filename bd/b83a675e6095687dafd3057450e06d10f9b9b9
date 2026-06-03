@@ -1,0 +1,86 @@
+internal/repo/account.go
+  s_efd833b199c90e::t_c97e2ccf4f1340 17
+internal/repo/sqlite/transaction.go
+  s_efd833b199c90e::t_0ded69a18566c3 15,17-18
+  s_efd833b199c90e::t_21a43a836ea559 28-30
+  s_efd833b199c90e::t_df9cf472c0e90d 71-73
+internal/repo/sqlite/cardxref.go
+  s_efd833b199c90e::t_8eb8f1291a11a6 14,16-17
+  s_efd833b199c90e::t_dc5a5155efb5cc 74-76
+cmd/seed/main.go
+  s_efd833b199c90e::t_31239d948aad47 4-11,28,31,37-44,51-52,55-82,85-89,91-94,97,100,103-106,109,112-115,119,128-131,323-324
+internal/repo/sqlite/discgroup_test.go
+  s_efd833b199c90e::t_3080f8ed9c73ba 26-33,36,41-53,56,64-68,70,75,80-85,90-91,94,101-109
+internal/repo/sqlite/discgroup.go
+  s_efd833b199c90e::t_de57d2ed802403 15,17-18
+internal/repo/sqlite/tcatbal_test.go
+  s_efd833b199c90e::t_ab77cb66d45152 26-33,36,41-43,46-56,64-68,70,75,80-84,86,89,92,97,102-103,106,113-121
+internal/repo/sqlite/tcatbal.go
+  s_efd833b199c90e::t_f8a94b0a073743 15,17-18
+internal/repo/sqlite/account_test.go
+  s_efd833b199c90e::t_d834963d68dc9a 41-58,63-70,73,78-92,95,98,102-113,115,117-118,121-122,124,126-127,130,138-143,148-154
+internal/repo/card.go
+  s_efd833b199c90e::t_455a7bc68e8c39 17-18
+internal/repo/sqlite/trantype_test.go
+  s_efd833b199c90e::t_0bbbd76764227f 16-20,22-23,26,31-32,35,40,45-50,58-61,63,70-78
+internal/repo/sqlite/helpers.go
+  s_efd833b199c90e::t_6f046538bc2242 4,18-23
+internal/repo/sqlite/cardxref_test.go
+  s_efd833b199c90e::t_d98b0cb3b9ca84 20-27,30,35-36,39,47-51,53,61-65,67,69,73-74,78-84,86,89,92-101,108-116
+internal/repo/sqlite/customer.go
+  s_efd833b199c90e::t_0ac079ef023599 14,16-17
+  s_efd833b199c90e::t_4214e6dcfd3c74 60-62
+internal/repo/sqlite/account.go
+  s_efd833b199c90e::t_f794142c2780d3 15,17-18
+  s_efd833b199c90e::t_f93b8d5f2eaae5 61-63
+internal/repo/usersec.go
+  s_efd833b199c90e::t_33e2830988408e 19-20
+internal/repo/sqlite/card_test.go
+  s_efd833b199c90e::t_8642204644952c 27-34,37,42-45,48,56-60,62,64,68-69,73-79,81,84,87-96,103-111
+internal/repo/sqlite/trancat_test.go
+  s_efd833b199c90e::t_b3c2f9267fb1ff 16-23,26,31-32,35,43-47,49,54,59-64,73,80-88
+internal/repo/sqlite/card.go
+  s_efd833b199c90e::t_2804f57c5200a1 65-67
+  s_efd833b199c90e::t_3b92a8d4d9ce24 14,16-17
+internal/repo/customer.go
+  s_efd833b199c90e::t_00053b2da1f6d5 16-17
+internal/repo/sqlite/customer_test.go
+  s_efd833b199c90e::t_2ae8dccddb0752 39-46,49,54-58,61,63-64,68-79,81,83-84,87-88,90,92-93,96,103-111
+Makefile
+  s_efd833b199c90e::t_4c3f78ee77d903 1
+  s_efd833b199c90e::t_056e2be15438d7 35-38
+internal/repo/cardxref.go
+  s_efd833b199c90e::t_ac764dfc35c05d 19-20
+internal/repo/sqlite/trancat.go
+  s_efd833b199c90e::t_007aeaf464b59a 14,16-17
+internal/repo/sqlite/usersec.go
+  s_efd833b199c90e::t_045ab71ed515f2 14,16-17
+internal/repo/sqlite/transaction_test.go
+  s_efd833b199c90e::t_84f9085012d6ad 35-42,45,50-56,59-60,67-80,82,84,88-89,93-99,101,104-113,116,123-131
+internal/repo/sqlite/trantype.go
+  s_efd833b199c90e::t_e850ea9c49d175 14,16-17
+internal/repo/sqlite/usersec_test.go
+  s_efd833b199c90e::t_4d0cdb032ead00 26,31-33,36,38,42-43,47-52,60-63,65,70,77-80
+internal/repo/transaction.go
+  s_efd833b199c90e::t_e1d3b3de5821ef 14-15,20-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "bdb83a675e6095687dafd3057450e06d10f9b9b9",
+  "prompts": {},
+  "sessions": {
+    "s_efd833b199c90e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8ffa3db9-8e76-4e0a-ada6-54a5264fd1c5",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 645,
+      "total_deletions": 222,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
