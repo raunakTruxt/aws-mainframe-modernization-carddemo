@@ -1,0 +1,82 @@
+docs/adr/0002-module-layout.md
+  s_804c7e7d564f7e::t_5b2e9b294d8354 1-31
+cmd/web/main.go
+  s_804c7e7d564f7e::t_2fcb39e6bbb28a 1-28
+Makefile
+  s_804c7e7d564f7e::t_a78f66b9981fef 1-41
+internal/auth/service.go
+  s_804c7e7d564f7e::t_b355b2ac661d73 32-37
+docs/adr/0006-batch-orchestration.md
+  s_804c7e7d564f7e::t_ad7bbf9fe000b8 1-31
+docs/adr/0007-decimal-arithmetic.md
+  s_804c7e7d564f7e::t_ee8855ca58565a 1-30
+docs/adr/0003-http-framework.md
+  s_804c7e7d564f7e::t_31c6dd099b8dce 1-30
+internal/cobolfmt/doc.go
+  s_804c7e7d564f7e::t_de9b985b891ee2 1-20
+internal/repo/doc.go
+  s_804c7e7d564f7e::t_21412b21fd4980 1-17
+internal/domain/doc.go
+  s_804c7e7d564f7e::t_f5d385575d5c33 1-18
+internal/service/doc.go
+  s_804c7e7d564f7e::t_036d720429a626 1-23
+docs/adr/0008-logging-observability.md
+  s_804c7e7d564f7e::t_fbbfe32748a9b9 1-32
+configs/orchestrator.yaml.example
+  s_804c7e7d564f7e::t_d84533626d2a29 1-30
+internal/auth/ratelimit.go
+  s_804c7e7d564f7e::t_bdd79126d50704 21-25
+internal/domain/usersec.go
+  s_804c7e7d564f7e::t_bdd79126d50704 60-64
+internal/batch/doc.go
+  s_804c7e7d564f7e::t_f969d9f54b8d6b 1-22
+internal/web/auth/handlers_test.go
+  s_804c7e7d564f7e::t_c691c30d6cf744 74,77-80,82-88
+  s_804c7e7d564f7e::t_b1712a3356def9 176,180,190,207,221,230,242,274,281,290,302,332,345
+  s_804c7e7d564f7e::t_c00a4773a80530 101
+  s_804c7e7d564f7e::t_d6b571cdf4d50f 100,166,189,229
+  s_804c7e7d564f7e::t_1fa2c4ca82e004 158,167
+  s_804c7e7d564f7e::t_9e5fe3d88c6aba 315,317-320
+docs/adr/0005-templating-ui.md
+  s_804c7e7d564f7e::t_de78439338ab0b 1-45
+docs/adr/0009-testing.md
+  s_804c7e7d564f7e::t_61183c6a7a245e 1-27
+internal/web/doc.go
+  s_804c7e7d564f7e::t_72d53dd6d766d7 1-26
+internal/audit/audit.go
+  s_804c7e7d564f7e::t_bdd79126d50704 25-30
+docs/adr/0004-persistence.md
+  s_804c7e7d564f7e::t_3356cdf037f166 1-32
+internal/auth/doc.go
+  s_804c7e7d564f7e::t_c8ecc8e018465d 1-12
+.golangci.yml
+  s_804c7e7d564f7e::t_02ac0414d14b7a 38
+  s_804c7e7d564f7e::t_d2d01e3f05facd 14-19
+  s_804c7e7d564f7e::t_89ab3464f1dbce 32-35
+  s_804c7e7d564f7e::t_fefc0195d2c9f8 1-12,24,26,29-31,36-37
+  s_804c7e7d564f7e::t_3ba0fe746fac66 13,20-23,25,27-28
+cmd/batch/main.go
+  s_804c7e7d564f7e::t_4c23a382670749 1-38
+internal/audit/doc.go
+  s_804c7e7d564f7e::t_5a230e535603c5 1-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "7d401b1dea02b516cf037a8d932fc81a7676c6f6",
+  "prompts": {},
+  "sessions": {
+    "s_804c7e7d564f7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "918097b1-ecfe-427a-9a7d-eb6461d0108a",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 652,
+      "total_deletions": 58,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
