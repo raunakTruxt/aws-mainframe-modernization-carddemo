@@ -1,0 +1,23 @@
+docs/migration/data-flow.md
+  s_91a4fdcad1b9d3::t_9358b03035cdc9 7-745,747-749,751-765
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "167bca426377b83a145e3db39a22248b30ee004b",
+  "prompts": {},
+  "sessions": {
+    "s_91a4fdcad1b9d3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9d0b0608-39ed-4fb0-b056-04df18541200",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 780,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
