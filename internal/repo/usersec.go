@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	ErrNotFound = errors.New("user not found")
-	ErrConflict = errors.New("user already exists")
+	ErrNotFound = errors.New("record not found")
+	ErrConflict = errors.New("record already exists")
 )
 
 // UserSecRepo mirrors the VSAM/KSDS operations the COBOL programs perform on

@@ -12,10 +12,10 @@ import (
 )
 
 // TransactionStore is the SQLite-backed repo.TransactionRepository.
-type TransactionStore struct{ db *sql.DB }
+type TransactionStore struct{ db querier }
 
-// NewTransactionStore returns a TransactionStore over db.
-func NewTransactionStore(db *sql.DB) *TransactionStore { return &TransactionStore{db: db} }
+// NewTransactionStore returns a TransactionStore over db (accepts *sql.DB or *sql.Tx).
+func NewTransactionStore(db querier) *TransactionStore { return &TransactionStore{db: db} }
 
 const transactionColumns = `tran_id, tran_type_code, tran_cat_code, tran_source, tran_desc, tran_amt, tran_merchant_id, tran_merchant_name, tran_merchant_city, tran_merchant_zip, tran_card_num, tran_orig_ts, tran_proc_ts`
 
@@ -25,6 +25,9 @@ func (s *TransactionStore) Get(ctx context.Context, tranID string) (*domain.Tran
 }
 
 func (s *TransactionStore) GetByCard(ctx context.Context, cardNum string, limit int) ([]*domain.TransactionRecord, error) {
+	if limit <= 0 {
+		limit = -1
+	}
 	rows, err := s.db.QueryContext(ctx, `SELECT `+transactionColumns+` FROM transactions WHERE tran_card_num = ? ORDER BY tran_id LIMIT ?`, cardNum, limit)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite: transaction get-by-card: %w", err)
@@ -65,6 +68,9 @@ func (s *TransactionStore) Delete(ctx context.Context, tranID string) error {
 }
 
 func (s *TransactionStore) Browse(ctx context.Context, startID string, limit int) ([]*domain.TransactionRecord, error) {
+	if limit <= 0 {
+		limit = -1
+	}
 	rows, err := s.db.QueryContext(ctx, `SELECT `+transactionColumns+` FROM transactions WHERE tran_id >= ? ORDER BY tran_id LIMIT ?`, startID, limit)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite: transaction browse: %w", err)

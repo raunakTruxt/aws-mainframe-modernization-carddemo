@@ -11,10 +11,10 @@ import (
 )
 
 // UserSecStore is the SQLite-backed repo.UserSecRepo, replacing InMemoryUserSec.
-type UserSecStore struct{ db *sql.DB }
+type UserSecStore struct{ db querier }
 
-// NewUserSecStore returns a UserSecStore over db.
-func NewUserSecStore(db *sql.DB) *UserSecStore { return &UserSecStore{db: db} }
+// NewUserSecStore returns a UserSecStore over db (accepts *sql.DB or *sql.Tx).
+func NewUserSecStore(db querier) *UserSecStore { return &UserSecStore{db: db} }
 
 const userColumns = `user_id, first_name, last_name, pwd_hash, user_type`
 

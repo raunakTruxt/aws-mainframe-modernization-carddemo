@@ -12,10 +12,10 @@ import (
 )
 
 // DiscGroupStore is the SQLite-backed repo.DiscGroupRepository.
-type DiscGroupStore struct{ db *sql.DB }
+type DiscGroupStore struct{ db querier }
 
-// NewDiscGroupStore returns a DiscGroupStore over db.
-func NewDiscGroupStore(db *sql.DB) *DiscGroupStore { return &DiscGroupStore{db: db} }
+// NewDiscGroupStore returns a DiscGroupStore over db (accepts *sql.DB or *sql.Tx).
+func NewDiscGroupStore(db querier) *DiscGroupStore { return &DiscGroupStore{db: db} }
 
 const discGroupColumns = `dis_acct_group_id, dis_tran_type_cd, dis_tran_cat_cd, dis_int_rate`
 

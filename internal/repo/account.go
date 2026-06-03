@@ -14,6 +14,6 @@ type AccountRepository interface {
 	Update(ctx context.Context, r *domain.AccountRecord) error
 	Delete(ctx context.Context, acctID int64) error
 	// Browse returns up to limit records with acctID >= startID, ordered by acctID.
-	// startID=0 returns from the beginning.
+	// startID=0 returns from the beginning. limit <= 0 returns all matching rows.
 	Browse(ctx context.Context, startID int64, limit int) ([]*domain.AccountRecord, error)
 }

@@ -12,10 +12,10 @@ import (
 )
 
 // AccountStore is the SQLite-backed repo.AccountRepository.
-type AccountStore struct{ db *sql.DB }
+type AccountStore struct{ db querier }
 
-// NewAccountStore returns an AccountStore over db.
-func NewAccountStore(db *sql.DB) *AccountStore { return &AccountStore{db: db} }
+// NewAccountStore returns an AccountStore over db (accepts *sql.DB or *sql.Tx).
+func NewAccountStore(db querier) *AccountStore { return &AccountStore{db: db} }
 
 const accountColumns = `acct_id, acct_active_status, acct_curr_bal, acct_credit_limit, acct_cash_credit_limit, acct_open_date, acct_expiration_date, acct_reissue_date, acct_curr_cyc_credit, acct_curr_cyc_debit, acct_addr_zip, acct_group_id`
 
@@ -58,6 +58,9 @@ func (s *AccountStore) Delete(ctx context.Context, acctID int64) error {
 }
 
 func (s *AccountStore) Browse(ctx context.Context, startID int64, limit int) ([]*domain.AccountRecord, error) {
+	if limit <= 0 {
+		limit = -1
+	}
 	rows, err := s.db.QueryContext(ctx, `SELECT `+accountColumns+` FROM accounts WHERE acct_id >= ? ORDER BY acct_id LIMIT ?`, startID, limit)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite: account browse: %w", err)

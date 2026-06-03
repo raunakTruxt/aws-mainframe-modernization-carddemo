@@ -23,27 +23,33 @@ func TestUserSecStore(t *testing.T) {
 		t.Fatalf("create user: %v", err)
 	}
 
-	// Lookup normalises the user id (upper-case), matching InMemoryUserSec.
+	// Full-field Get assertion; normalised user ID.
 	got, err := s.Get(ctx, "admin01")
 	if err != nil {
 		t.Fatalf("get: %v", err)
 	}
-	if got.UserID != "ADMIN01" || got.Type != domain.UserTypeAdmin || got.PwdHash != "hash-a" {
-		t.Fatalf("get mismatch: %+v", got)
+	if got.UserID != "ADMIN01" || got.FirstName != "ADA" || got.LastName != "ADMIN" ||
+		got.PwdHash != "hash-a" || got.Type != domain.UserTypeAdmin {
+		t.Fatalf("get mismatch:\nwant %+v\ngot  %+v", admin, got)
 	}
 
+	// Update and verify.
 	got.LastName = "BOSS"
+	got.PwdHash = "hash-b"
 	if err := s.Update(ctx, got); err != nil {
 		t.Fatalf("update: %v", err)
 	}
-	reread, err := s.Get(ctx, "ADMIN01")
-	if err != nil {
-		t.Fatalf("get after update: %v", err)
-	}
-	if reread.LastName != "BOSS" {
+	reread, _ := s.Get(ctx, "ADMIN01")
+	if reread.LastName != "BOSS" || reread.PwdHash != "hash-b" {
 		t.Fatalf("update not persisted: %+v", reread)
 	}
 
+	// Update of missing row returns ErrNotFound.
+	if err := s.Update(ctx, domain.UserSec{UserID: "MISSING", Type: domain.UserTypeUser}); !errors.Is(err, repo.ErrNotFound) {
+		t.Fatalf("update missing: want ErrNotFound, got %v", err)
+	}
+
+	// List returns all users sorted by user_id.
 	all, err := s.List(ctx)
 	if err != nil {
 		t.Fatalf("list: %v", err)
@@ -51,15 +57,26 @@ func TestUserSecStore(t *testing.T) {
 	if len(all) != 2 {
 		t.Fatalf("list: want 2, got %d", len(all))
 	}
+	// Verify order (ADMIN01 < USER01 lexicographically).
+	if all[0].UserID != "ADMIN01" || all[1].UserID != "USER01" {
+		t.Fatalf("list order: %v", all)
+	}
 
+	// Duplicate Create returns ErrConflict.
 	if err := s.Create(ctx, admin); !errors.Is(err, repo.ErrConflict) {
 		t.Fatalf("duplicate create: want ErrConflict, got %v", err)
 	}
 
+	// Delete.
 	if err := s.Delete(ctx, "user01"); err != nil {
 		t.Fatalf("delete: %v", err)
 	}
 	if _, err := s.Get(ctx, "user01"); !errors.Is(err, repo.ErrNotFound) {
 		t.Fatalf("get deleted: want ErrNotFound, got %v", err)
+	}
+
+	// Delete of missing row returns ErrNotFound.
+	if err := s.Delete(ctx, "user01"); !errors.Is(err, repo.ErrNotFound) {
+		t.Fatalf("delete missing: want ErrNotFound, got %v", err)
 	}
 }

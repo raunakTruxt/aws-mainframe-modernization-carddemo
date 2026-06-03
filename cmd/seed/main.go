@@ -1,9 +1,14 @@
 // Command seed loads the EBCDIC fixture files from app/data/EBCDIC into a
 // SQLite database via the repo interfaces, then prints per-table row counts.
 //
-// It is a development convenience: it decodes each fixed-length record with the
-// domain decode functions and writes it through the SQLite stores, so the same
-// path the application uses is exercised end to end.
+// By default (wipe=true) all tables are cleared and reloaded atomically inside
+// a single transaction; the entire load succeeds or the DB is left unchanged.
+// Pass -wipe=false to insert without clearing — this fails on duplicate keys.
+//
+// User passwords: the USRSEC fixture carries legacy plaintext passwords.
+// The seed stores them verbatim in the pwd_hash column. This is intentional
+// for development/fixture purposes only; production user provisioning goes
+// through internal/auth, which uses bcrypt. A warning is printed at startup.
 package main
 
 import (
@@ -20,50 +25,45 @@ import (
 func main() {
 	dbPath := flag.String("db", "carddemo.sqlite", "SQLite database file to create or update")
 	dataDir := flag.String("data", filepath.Join("app", "data", "EBCDIC"), "directory holding the EBCDIC fixture files")
+	wipe := flag.Bool("wipe", true, "delete all rows before inserting (atomic wipe-and-reload; safe to re-run)")
 	flag.Parse()
 
-	if err := run(*dbPath, *dataDir); err != nil {
+	if err := run(*dbPath, *dataDir, *wipe); err != nil {
 		fmt.Fprintf(os.Stderr, "seed: %v\n", err)
 		os.Exit(1)
 	}
 }
 
-func run(dbPath, dataDir string) error {
+// wipeTables is the ordered list of tables to clear when -wipe=true.
+// Order is leaf-first to respect any future FK constraints.
+var wipeTables = []string{
+	"tran_cat_bals", "disc_groups", "tran_cats", "tran_types",
+	"transactions", "card_xrefs", "cards", "customers", "accounts", "users",
+}
+
+func run(dbPath, dataDir string, wipe bool) error {
 	db, err := sqlite.Open(dbPath)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
-	ctx := context.Background()
-	counts := make(map[string]int)
+	fmt.Fprintln(os.Stderr, "WARNING: USRSEC passwords are stored verbatim (plaintext) — dev fixture only, never use in production")
 
-	loaders := []struct {
-		table string
-		fn    func(context.Context, string) (int, error)
-	}{
-		{"accounts", func(c context.Context, p string) (int, error) { return seedAccounts(c, sqlite.NewAccountStore(db), p) }},
-		{"customers", func(c context.Context, p string) (int, error) {
-			return seedCustomers(c, sqlite.NewCustomerStore(db), p)
-		}},
-		{"cards", func(c context.Context, p string) (int, error) { return seedCards(c, sqlite.NewCardStore(db), p) }},
-		{"card_xrefs", func(c context.Context, p string) (int, error) {
-			return seedCardXrefs(c, sqlite.NewCardXrefStore(db), p)
-		}},
-		{"transactions", func(c context.Context, p string) (int, error) {
-			return seedTransactions(c, sqlite.NewTransactionStore(db), p)
-		}},
-		{"tran_types", func(c context.Context, p string) (int, error) {
-			return seedTranTypes(c, sqlite.NewTranTypeStore(db), p)
-		}},
-		{"tran_cats", func(c context.Context, p string) (int, error) { return seedTranCats(c, sqlite.NewTranCatStore(db), p) }},
-		{"disc_groups", func(c context.Context, p string) (int, error) {
-			return seedDiscGroups(c, sqlite.NewDiscGroupStore(db), p)
-		}},
-		{"tran_cat_bals", func(c context.Context, p string) (int, error) {
-			return seedTranCatBals(c, sqlite.NewTranCatBalStore(db), p)
-		}},
-		{"users", func(c context.Context, p string) (int, error) { return seedUsers(c, sqlite.NewUserSecStore(db), p) }},
+	ctx := context.Background()
+
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("begin transaction: %w", err)
+	}
+	defer tx.Rollback() //nolint:errcheck
+
+	if wipe {
+		for _, table := range wipeTables {
+			if _, err := tx.ExecContext(ctx, "DELETE FROM "+table); err != nil {
+				return fmt.Errorf("wipe %s: %w", table, err)
+			}
+		}
 	}
 
 	files := map[string]string{
@@ -79,12 +79,54 @@ func run(dbPath, dataDir string) error {
 		"users":         "AWS.M2.CARDDEMO.USRSEC.PS",
 	}
 
+	type loader struct {
+		table string
+		fn    func(context.Context, string) (int, error)
+	}
+	loaders := []loader{
+		{"accounts", func(c context.Context, p string) (int, error) {
+			return seedAccounts(c, sqlite.NewAccountStore(tx), p)
+		}},
+		{"customers", func(c context.Context, p string) (int, error) {
+			return seedCustomers(c, sqlite.NewCustomerStore(tx), p)
+		}},
+		{"cards", func(c context.Context, p string) (int, error) {
+			return seedCards(c, sqlite.NewCardStore(tx), p)
+		}},
+		{"card_xrefs", func(c context.Context, p string) (int, error) {
+			return seedCardXrefs(c, sqlite.NewCardXrefStore(tx), p)
+		}},
+		{"transactions", func(c context.Context, p string) (int, error) {
+			return seedTransactions(c, sqlite.NewTransactionStore(tx), p)
+		}},
+		{"tran_types", func(c context.Context, p string) (int, error) {
+			return seedTranTypes(c, sqlite.NewTranTypeStore(tx), p)
+		}},
+		{"tran_cats", func(c context.Context, p string) (int, error) {
+			return seedTranCats(c, sqlite.NewTranCatStore(tx), p)
+		}},
+		{"disc_groups", func(c context.Context, p string) (int, error) {
+			return seedDiscGroups(c, sqlite.NewDiscGroupStore(tx), p)
+		}},
+		{"tran_cat_bals", func(c context.Context, p string) (int, error) {
+			return seedTranCatBals(c, sqlite.NewTranCatBalStore(tx), p)
+		}},
+		{"users", func(c context.Context, p string) (int, error) {
+			return seedUsers(c, sqlite.NewUserSecStore(tx), p)
+		}},
+	}
+
+	counts := make(map[string]int, len(loaders))
 	for _, l := range loaders {
 		n, err := l.fn(ctx, filepath.Join(dataDir, files[l.table]))
 		if err != nil {
 			return fmt.Errorf("%s: %w", l.table, err)
 		}
 		counts[l.table] = n
+	}
+
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("commit: %w", err)
 	}
 
 	for _, l := range loaders {
@@ -278,8 +320,8 @@ func seedTranCatBals(ctx context.Context, s *sqlite.TranCatBalStore, path string
 
 // seedUsers loads the USRSEC fixture. The on-disk record carries the legacy
 // plaintext password; the seed stores it verbatim in PwdHash so the fixture is
-// loadable without re-hashing. Production user provisioning runs through
-// internal/auth, which bcrypts the password.
+// loadable without re-hashing. A warning is printed at startup.
+// Production user provisioning runs through internal/auth (bcrypt).
 func seedUsers(ctx context.Context, s *sqlite.UserSecStore, path string) (int, error) {
 	data, err := readFixture(path)
 	if err != nil {

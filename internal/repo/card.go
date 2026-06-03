@@ -14,5 +14,7 @@ type CardRepository interface {
 	Create(ctx context.Context, r *domain.CardRecord) error
 	Update(ctx context.Context, r *domain.CardRecord) error
 	Delete(ctx context.Context, cardNum string) error
+	// Browse returns up to limit records with cardNum >= startNum, ordered by cardNum.
+	// startNum="" returns from the beginning. limit <= 0 returns all matching rows.
 	Browse(ctx context.Context, startNum string, limit int) ([]*domain.CardRecord, error)
 }

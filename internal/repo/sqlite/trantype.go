@@ -11,10 +11,10 @@ import (
 )
 
 // TranTypeStore is the SQLite-backed repo.TranTypeRepository.
-type TranTypeStore struct{ db *sql.DB }
+type TranTypeStore struct{ db querier }
 
-// NewTranTypeStore returns a TranTypeStore over db.
-func NewTranTypeStore(db *sql.DB) *TranTypeStore { return &TranTypeStore{db: db} }
+// NewTranTypeStore returns a TranTypeStore over db (accepts *sql.DB or *sql.Tx).
+func NewTranTypeStore(db querier) *TranTypeStore { return &TranTypeStore{db: db} }
 
 const tranTypeColumns = `tran_type, tran_type_desc`
 

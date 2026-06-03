@@ -11,10 +11,10 @@ import (
 )
 
 // CardXrefStore is the SQLite-backed repo.CardXrefRepository.
-type CardXrefStore struct{ db *sql.DB }
+type CardXrefStore struct{ db querier }
 
-// NewCardXrefStore returns a CardXrefStore over db.
-func NewCardXrefStore(db *sql.DB) *CardXrefStore { return &CardXrefStore{db: db} }
+// NewCardXrefStore returns a CardXrefStore over db (accepts *sql.DB or *sql.Tx).
+func NewCardXrefStore(db querier) *CardXrefStore { return &CardXrefStore{db: db} }
 
 const cardXrefColumns = `xref_card_num, xref_cust_id, xref_acct_id`
 
@@ -71,6 +71,9 @@ func (s *CardXrefStore) Delete(ctx context.Context, cardNum string) error {
 }
 
 func (s *CardXrefStore) Browse(ctx context.Context, startNum string, limit int) ([]*domain.CardXrefRecord, error) {
+	if limit <= 0 {
+		limit = -1
+	}
 	rows, err := s.db.QueryContext(ctx, `SELECT `+cardXrefColumns+` FROM card_xrefs WHERE xref_card_num >= ? ORDER BY xref_card_num LIMIT ?`, startNum, limit)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite: cardxref browse: %w", err)

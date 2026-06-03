@@ -11,10 +11,10 @@ import (
 )
 
 // CardStore is the SQLite-backed repo.CardRepository.
-type CardStore struct{ db *sql.DB }
+type CardStore struct{ db querier }
 
-// NewCardStore returns a CardStore over db.
-func NewCardStore(db *sql.DB) *CardStore { return &CardStore{db: db} }
+// NewCardStore returns a CardStore over db (accepts *sql.DB or *sql.Tx).
+func NewCardStore(db querier) *CardStore { return &CardStore{db: db} }
 
 const cardColumns = `card_num, card_acct_id, card_cvv_code, card_embossed_name, card_expiration_date, card_active_status`
 
@@ -62,6 +62,9 @@ func (s *CardStore) Delete(ctx context.Context, cardNum string) error {
 }
 
 func (s *CardStore) Browse(ctx context.Context, startNum string, limit int) ([]*domain.CardRecord, error) {
+	if limit <= 0 {
+		limit = -1
+	}
 	rows, err := s.db.QueryContext(ctx, `SELECT `+cardColumns+` FROM cards WHERE card_num >= ? ORDER BY card_num LIMIT ?`, startNum, limit)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite: card browse: %w", err)

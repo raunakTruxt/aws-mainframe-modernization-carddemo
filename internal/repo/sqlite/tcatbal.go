@@ -12,10 +12,10 @@ import (
 )
 
 // TranCatBalStore is the SQLite-backed repo.TranCatBalRepository.
-type TranCatBalStore struct{ db *sql.DB }
+type TranCatBalStore struct{ db querier }
 
-// NewTranCatBalStore returns a TranCatBalStore over db.
-func NewTranCatBalStore(db *sql.DB) *TranCatBalStore { return &TranCatBalStore{db: db} }
+// NewTranCatBalStore returns a TranCatBalStore over db (accepts *sql.DB or *sql.Tx).
+func NewTranCatBalStore(db querier) *TranCatBalStore { return &TranCatBalStore{db: db} }
 
 const tranCatBalColumns = `trancat_acct_id, trancat_type_cd, trancat_cd, tran_cat_balance`
 

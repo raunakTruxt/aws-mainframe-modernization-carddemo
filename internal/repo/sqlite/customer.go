@@ -11,10 +11,10 @@ import (
 )
 
 // CustomerStore is the SQLite-backed repo.CustomerRepository.
-type CustomerStore struct{ db *sql.DB }
+type CustomerStore struct{ db querier }
 
-// NewCustomerStore returns a CustomerStore over db.
-func NewCustomerStore(db *sql.DB) *CustomerStore { return &CustomerStore{db: db} }
+// NewCustomerStore returns a CustomerStore over db (accepts *sql.DB or *sql.Tx).
+func NewCustomerStore(db querier) *CustomerStore { return &CustomerStore{db: db} }
 
 const customerColumns = `cust_id, cust_first_name, cust_middle_name, cust_last_name, cust_addr_line_1, cust_addr_line_2, cust_addr_line_3, cust_addr_state_code, cust_addr_country_code, cust_addr_zip, cust_phone_num_1, cust_phone_num_2, cust_ssn, cust_govt_issued_id, cust_dob, cust_eft_account_id, cust_pri_card_holder_ind, cust_fico_credit_score`
 
@@ -57,6 +57,9 @@ func (s *CustomerStore) Delete(ctx context.Context, custID int64) error {
 }
 
 func (s *CustomerStore) Browse(ctx context.Context, startID int64, limit int) ([]*domain.CustomerRecord, error) {
+	if limit <= 0 {
+		limit = -1
+	}
 	rows, err := s.db.QueryContext(ctx, `SELECT `+customerColumns+` FROM customers WHERE cust_id >= ? ORDER BY cust_id LIMIT ?`, startID, limit)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite: customer browse: %w", err)

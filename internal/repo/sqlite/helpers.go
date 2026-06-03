@@ -1,6 +1,7 @@
 package sqlite
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"strings"
@@ -12,6 +13,14 @@ import (
 // serves point reads and row iteration.
 type scanner interface {
 	Scan(dest ...any) error
+}
+
+// querier is satisfied by both *sql.DB and *sql.Tx, allowing stores to accept
+// either a pool connection or a transaction from the caller.
+type querier interface {
+	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
+	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
+	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
 }
 
 // requireAffected maps a zero-row UPDATE/DELETE to repo.ErrNotFound, matching

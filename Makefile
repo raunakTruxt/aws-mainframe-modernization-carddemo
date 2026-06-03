@@ -1,4 +1,4 @@
-.PHONY: build test lint vet tidy run-web run-batch clean help
+.PHONY: build test lint vet tidy run-web run-batch seed-sqlite clean help
 
 # Set RACE=1 to enable the race detector (requires CGO; skip for sqlite-backed tests).
 RACE   ?=
@@ -31,6 +31,10 @@ run-web:
 ## run-batch: print batch subcommand usage
 run-batch:
 	go run ./cmd/batch
+
+## seed-sqlite: load EBCDIC fixtures into carddemo.sqlite (pass -wipe=false to preserve existing data)
+seed-sqlite:
+	go run ./cmd/seed
 
 ## clean: remove build artifacts
 clean:
