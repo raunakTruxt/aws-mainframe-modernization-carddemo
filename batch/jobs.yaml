@@ -1,0 +1,183 @@
+# CardDemo batch orchestrator configuration (RAU-44).
+# Maps every legacy JCL job to its Go equivalent subcommand(s).
+# Run with: carddemo-batch run-job <job-name> [-db path] [-jobs batch/jobs.yaml]
+#
+# IDCAMS-only jobs (pure file operations with no COBOL programs) are marked
+# skip: true — they are handled by the seed loader (RAU-38) or are no-ops in
+# the SQLite model.
+
+jobs:
+
+  # --- Diagnostic dump jobs ---
+
+  READACCT:
+    description: "CBACT01C / READACCT.jcl — dump account master to stdout"
+    steps:
+      - name: dump-accounts
+        command: acct-dump
+
+  READCARD:
+    description: "CBACT02C / READCARD.jcl — dump card master to stdout"
+    steps:
+      - name: dump-cards
+        command: card-dump
+
+  READCUST:
+    description: "CBCUS01C / READCUST.jcl — dump customer master to stdout"
+    steps:
+      - name: dump-customers
+        command: cust-dump
+
+  READXREF:
+    description: "CBACT03C / READXREF.jcl — dump card-xref master to stdout"
+    steps:
+      - name: dump-xrefs
+        command: xref-dump
+
+  # --- Core batch processing jobs ---
+
+  INTCALC:
+    description: "CBACT04C / INTCALC.jcl — compute monthly interest charges"
+    steps:
+      - name: interest-calculation
+        command: intcalc
+
+  POSTTRAN:
+    description: "CBTRN02C / POSTTRAN.jcl — validate and post daily transactions"
+    steps:
+      - name: post-transactions
+        command: tran-post
+        args:
+          - -input
+          - app/data/EBCDIC/AWS.M2.CARDDEMO.DALYTRAN.PS
+          - -rejects
+          - output/dalyrejs.dat
+
+  TRANREPT:
+    description: "CBTRN03C / TRANREPT.jcl — produce transaction detail report"
+    steps:
+      - name: transaction-report
+        command: tran-report
+        args:
+          - -output
+          - output/tranrept.txt
+
+  # --- Export/import jobs ---
+
+  CBEXPORT:
+    description: "CBEXPORT / CBEXPORT.jcl — export all entities to flat file"
+    steps:
+      - name: export-all
+        command: export
+        args:
+          - -output
+          - output/carddemo-export.dat
+
+  CBIMPORT:
+    description: "CBIMPORT / CBIMPORT.jcl — import entities from export flat file"
+    steps:
+      - name: import-all
+        command: import
+        args:
+          - -input
+          - output/carddemo-export.dat
+
+  # --- Orchestration jobs ---
+
+  COMBTRAN:
+    description: "COMBTRAN.jcl — sort + merge backed-up and system transactions into master"
+    steps:
+      - name: combine-transactions
+        command: combtran
+        args:
+          - -secondary
+          - output/systran.dat
+
+  TRANBKP:
+    description: "TRANBKP.jcl — backup transaction master, then wipe and recreate empty"
+    steps:
+      - name: backup-transactions
+        command: tranbkp
+        args:
+          - -output
+          - output/transact-bkup.dat
+          - -reset=true
+
+  # --- Daily cycle: full end-of-day batch run ---
+
+  DAILY-CYCLE:
+    description: "End-of-day batch sequence: backup → post → interest → report"
+    steps:
+      - name: backup-before-post
+        command: tranbkp
+        args:
+          - -output
+          - output/transact-bkup-pre.dat
+          - -reset=false
+      - name: post-daily-transactions
+        command: tran-post
+        args:
+          - -input
+          - app/data/EBCDIC/AWS.M2.CARDDEMO.DALYTRAN.PS
+          - -rejects
+          - output/dalyrejs.dat
+      - name: interest-calculation
+        command: intcalc
+      - name: transaction-report
+        command: tran-report
+        args:
+          - -output
+          - output/tranrept.txt
+
+  # --- Utility jobs ---
+
+  WAITSTEP:
+    description: "COBSWAIT / WAITSTEP.jcl — sleep for a configurable duration"
+    steps:
+      - name: wait
+        command: wait
+        args:
+          - -centiseconds
+          - "100"
+
+  # --- IDCAMS-only jobs (file creation/copy — skipped, handled by seed loader) ---
+
+  ACCTFILE:
+    description: "ACCTFILE.jcl — define VSAM KSDS cluster (IDCAMS only, no-op in SQLite model)"
+    steps:
+      - name: define-acctfile
+        command: acct-dump
+        skip: true
+        skip_reason: "IDCAMS DEFINE — replaced by schema in internal/repo/sqlite/schema.sql"
+
+  CARDFILE:
+    description: "CARDFILE.jcl — define VSAM KSDS cluster (IDCAMS only)"
+    steps:
+      - name: define-cardfile
+        command: card-dump
+        skip: true
+        skip_reason: "IDCAMS DEFINE — replaced by schema in internal/repo/sqlite/schema.sql"
+
+  CUSTFILE:
+    description: "CUSTFILE.jcl — define VSAM KSDS cluster (IDCAMS only)"
+    steps:
+      - name: define-custfile
+        command: cust-dump
+        skip: true
+        skip_reason: "IDCAMS DEFINE — replaced by schema in internal/repo/sqlite/schema.sql"
+
+  XREFFILE:
+    description: "XREFFILE.jcl — define VSAM KSDS cluster (IDCAMS only)"
+    steps:
+      - name: define-xreffile
+        command: xref-dump
+        skip: true
+        skip_reason: "IDCAMS DEFINE — replaced by schema in internal/repo/sqlite/schema.sql"
+
+  TRANFILE:
+    description: "TRANFILE.jcl — define VSAM KSDS cluster (IDCAMS only)"
+    steps:
+      - name: define-tranfile
+        command: tranbkp
+        skip: true
+        skip_reason: "IDCAMS DEFINE — replaced by schema in internal/repo/sqlite/schema.sql"
