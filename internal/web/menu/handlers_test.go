@@ -38,7 +38,7 @@ func newTestEnv(t *testing.T) *testEnv {
 	authH := webauth.NewHandlers(svc)
 	authH.CookieOptions.Secure = false
 
-	router := web.NewRouter(authH, store, sink)
+	router := web.NewRouter(authH, nil, store, sink)
 	srv := httptest.NewServer(router)
 	t.Cleanup(srv.Close)
 

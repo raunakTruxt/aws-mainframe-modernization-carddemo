@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/audit"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/auth"
+	webaccount "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/account"
 	webauth "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/auth"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/layout"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/menu"
@@ -26,6 +27,7 @@ import (
 // silently allowed into protected routes.
 func NewRouter(
 	authH *webauth.Handlers,
+	accountH *webaccount.Handlers,
 	store auth.SessionStore,
 	auditSink audit.Sink,
 ) http.Handler {
@@ -62,11 +64,16 @@ func NewRouter(
 		r.Get("/", menu.GetMainMenu)
 		r.Post("/", menu.PostMainMenu)
 
-		// Per-module stubs: RAU-38 (account), RAU-40 (card), RAU-41 (txn),
-		// RAU-42 (billing), RAU-45 (report). Each stub registers the template
-		// so all 17 BMS maps are reachable; the owning issue replaces the stub.
-		r.Get("/account/view", stubHandler("Account View"))
-		r.Get("/account/update", stubHandler("Account Update"))
+		// Account view/update — RAU-40.
+		if accountH != nil {
+			r.Get("/account/view", accountH.GetView)
+			r.Post("/account/view", accountH.PostView)
+			r.Get("/account/update", accountH.GetUpdate)
+			r.Post("/account/update", accountH.PostUpdate)
+		} else {
+			r.Get("/account/view", stubHandler("Account View"))
+			r.Get("/account/update", stubHandler("Account Update"))
+		}
 		r.Get("/cards/list", stubHandler("Credit Card List"))
 		r.Get("/cards/view", stubHandler("Credit Card View"))
 		r.Get("/cards/update", stubHandler("Credit Card Update"))
