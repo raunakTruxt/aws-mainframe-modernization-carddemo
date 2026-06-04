@@ -1,0 +1,37 @@
+internal/repo/sqlite/transaction.go
+  s_aad0813b255393::t_20c6ff35c23d14 70-83
+cmd/web/main.go
+  s_aad0813b255393::t_e0559d919d1dea 15-16,19,27-37,39,43-44,46-50,52,57,60-76
+internal/repo/transaction.go
+  s_aad0813b255393::t_671d594429a1e9 23-27
+internal/web/transaction/handlers_test.go
+  s_aad0813b255393::t_8f47899960d19e 37
+internal/service/transaction/service.go
+  s_aad0813b255393::t_68e480b9513b3c 42-54,79,97,105,142-144,175,186,193-199,201-211,213-238,248-249,263,281-286,288-298,300-314,316-323,325
+internal/repo/sqlite/transactor.go
+  s_aad0813b255393::t_617a278470c94c 1-37
+internal/service/transaction/service_test.go
+  s_aad0813b255393::t_0671ef34bf8113 479
+  s_aad0813b255393::t_9ba4744ace0f0a 32
+  s_aad0813b255393::t_fdaa9e955dbdd7 434-478,480-532
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "b430e6bc2374efef15f7da0f635946ea632342dd",
+  "prompts": {},
+  "sessions": {
+    "s_aad0813b255393": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6bdc56fe-747c-446d-8fd6-18e3fe4a422a",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 317,
+      "total_deletions": 90,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
