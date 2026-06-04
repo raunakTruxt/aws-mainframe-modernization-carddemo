@@ -1,0 +1,87 @@
+internal/batch/acctdump/acctdump_test.go
+  s_32a3fd06ab8851::t_21d5a71f303e15 1-62
+internal/batch/export/export_test.go
+  s_32a3fd06ab8851::t_112820ae38b4bb 1-136
+internal/batch/tranvalidate/tranvalidate_test.go
+  s_32a3fd06ab8851::t_d5386d436e8d16 1-136
+internal/batch/carddump/carddump.go
+  s_32a3fd06ab8851::t_662a7ee0e82817 1-56
+internal/batch/custdump/custdump_test.go
+  s_32a3fd06ab8851::t_6b9f888470fdd1 1-57
+batch/jobs.yaml
+  s_32a3fd06ab8851::t_82bb253c8579d1 1-183
+internal/batch/combtran/combtran_test.go
+  s_32a3fd06ab8851::t_121e71704b6263 6
+  s_32a3fd06ab8851::t_f5561a4a88f2d1 1-5,7-145
+internal/batch/tranbkp/tranbkp_test.go
+  s_32a3fd06ab8851::t_946b95f8dac73a 6
+  s_32a3fd06ab8851::t_950295e8797008 1-5,7-126
+internal/batch/export/export.go
+  s_32a3fd06ab8851::t_77a4f2b1ec2aaa 22
+  s_32a3fd06ab8851::t_e2f94a26aa425a 1-21,23-276,278-285,298-316,330-337,344-346
+  s_32a3fd06ab8851::t_193621e781f6ec 286-297,317-329,338-343
+  s_32a3fd06ab8851::t_4faa609dd157b0 277
+internal/batch/intcalc/intcalc.go
+  s_32a3fd06ab8851::t_495c2afa167eb9 1-191
+internal/batch/wait/wait.go
+  s_32a3fd06ab8851::t_8ab2a26611786d 1-34
+internal/batch/batchimport/batchimport_test.go
+  s_32a3fd06ab8851::t_3502909f3c3459 1-99
+internal/batch/tranreport/tranreport.go
+  s_32a3fd06ab8851::t_93f02a837c357b 1-186
+internal/batch/acctdump/acctdump.go
+  s_32a3fd06ab8851::t_c32261819279a0 1-60
+internal/batch/xrefdump/xrefdump.go
+  s_32a3fd06ab8851::t_cf0f0a1fa83b77 1-54
+internal/batch/carddump/carddump_test.go
+  s_32a3fd06ab8851::t_d1ae9d4a1b3446 1-59
+internal/batch/custdump/custdump.go
+  s_32a3fd06ab8851::t_1b7914e1e7a930 1-59
+internal/batch/intcalc/intcalc_test.go
+  s_32a3fd06ab8851::t_7265424f956941 1-198
+internal/batch/tranpost/tranpost.go
+  s_32a3fd06ab8851::t_beb480c3ae3303 1-249
+internal/batch/tranvalidate/tranvalidate.go
+  s_32a3fd06ab8851::t_31d3d5e10bb8ab 1-112
+internal/batch/tranpost/tranpost_test.go
+  s_32a3fd06ab8851::t_fcc4943b32e9c5 6,47-48,59-60,67,71-75,86-87,98-99,102,121,130,133,137,141-143,146,151,165-176,185-187,189,191-199,201-205,208,216,224,231-232,237,240,244-245,247-253,255,257,259-260,262-264,266-269,271
+  s_32a3fd06ab8851::t_4f3d2fc1db4dc2 161
+  s_32a3fd06ab8851::t_1f4da284f30de8 163
+  s_32a3fd06ab8851::t_4d73ab93cccc98 162
+  s_32a3fd06ab8851::t_87f3f4c3ecdb29 1-5,7-46,49-58,61-66,68-70,76-85,88-97,100-101,103-120,122-129,131-132,134-136,138-140,144-145,147-150,152-160,164,177-184,188,190,200,206-207,209-215,217-223,225-230,233-236,238-239,241-243,246,254,256,258,261,265,270,272
+internal/batch/tranreport/tranreport_test.go
+  s_32a3fd06ab8851::t_f9f24c591a475e 1-5,7-14,27-98,101,103,107-151
+  s_32a3fd06ab8851::t_8dd1d4fac1a982 6,15-26,99-100,102,104-106
+internal/batch/combtran/combtran.go
+  s_32a3fd06ab8851::t_789b53eee424b9 1-115
+internal/batch/tranbkp/tranbkp.go
+  s_32a3fd06ab8851::t_3f0623dc052f77 1-108
+cmd/batch/main.go
+  s_32a3fd06ab8851::t_f95837dceffe71 1,3-5,7-22,26-27,29,31-45,49-756
+internal/batch/xrefdump/xrefdump_test.go
+  s_32a3fd06ab8851::t_97c97e608e8a39 1-56
+internal/batch/wait/wait_test.go
+  s_32a3fd06ab8851::t_209ebcccb72da4 1-48
+internal/batch/batchimport/batchimport.go
+  s_32a3fd06ab8851::t_8d1c042c3ced2e 1-224
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "c6212aa05c0395236314eb72b1ea61406a08f97c",
+  "prompts": {},
+  "sessions": {
+    "s_32a3fd06ab8851": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d8f3e60-39af-48c9-a890-832c759be1c5",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 4509,
+      "total_deletions": 268,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
