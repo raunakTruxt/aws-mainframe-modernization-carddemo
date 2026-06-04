@@ -1,0 +1,235 @@
+go.mod
+  s_aad0813b255393::t_945a298b4d450c 6
+  s_aad0813b255393::t_ffa83b00cbceb4 1-5,7-23
+docs/adr/0006-batch-orchestration.md
+  s_aad0813b255393::t_73ba22a5bddac5 1-31
+internal/repo/sqlite/trancat_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-90
+internal/repo/sqlite/trancat.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-95
+internal/cobolfmt/packed.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-165
+internal/domain/card.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-209
+internal/repo/trantype.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-17
+internal/web/menu/handlers_test.go
+  s_aad0813b255393::t_71a0b11ce1484b 41
+  s_aad0813b255393::t_005208c3f8e258 1-40,42-313
+internal/domain/export.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-797
+internal/repo/sqlite/card.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-98
+internal/auth/password_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-31
+internal/repo/doc.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-17
+internal/web/router.go
+  s_aad0813b255393::t_b5f007d214fc00 14
+  s_aad0813b255393::t_005208c3f8e258 1-13,15-27,31-34,36-69,72-78,94-137
+  s_aad0813b255393::t_66a8f1dc0ffb15 70-71,79-93
+  s_aad0813b255393::t_ac630f521f25a2 28-30,35
+internal/auth/ratelimit.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-86
+internal/repo/sqlite/customer.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-92
+internal/repo/sqlite/cardxref.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-107
+internal/repo/sqlite/customer_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-113
+internal/domain/usersec.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-106
+internal/repo/sqlite/assertions.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-16
+docs/adr/0005-templating-ui.md
+  s_aad0813b255393::t_73ba22a5bddac5 1-45
+cmd/web/main.go
+  s_aad0813b255393::t_005208c3f8e258 3,7,11-17,24-38,40,42,49
+  s_aad0813b255393::t_54c3fa52b6645a 43-46
+  s_aad0813b255393::t_73ba22a5bddac5 1-2,4-6,8-10,18-23,39,41,47-48,50-52
+internal/auth/session.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-189
+configs/orchestrator.yaml.example
+  s_aad0813b255393::t_73ba22a5bddac5 1-30
+internal/repo/sqlite/cardxref_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-118
+internal/repo/sqlite/db.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-30
+docs/adr/0007-decimal-arithmetic.md
+  s_aad0813b255393::t_73ba22a5bddac5 1-30
+internal/repo/sqlite/discgroup.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-102
+internal/repo/sqlite/helpers.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-43
+internal/repo/sqlite/schema.sql
+  s_aad0813b255393::t_73ba22a5bddac5 1-114
+internal/cobolfmt/ebcdic_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-141
+internal/domain/account.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-182
+internal/repo/sqlite/card_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-113
+internal/auth/service.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-191
+internal/auth/middleware.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-174
+internal/repo/sqlite/tcatbal.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-111
+internal/repo/sqlite/trantype_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-80
+docs/adr/0008-logging-observability.md
+  s_aad0813b255393::t_73ba22a5bddac5 1-32
+internal/repo/sqlite/discgroup_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-111
+internal/cobolfmt/binary.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-84
+cmd/batch/main.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-38
+docs/adr/0004-persistence.md
+  s_aad0813b255393::t_73ba22a5bddac5 1-32
+cmd/carddemo/main.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-67
+internal/domain/transaction.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-315
+internal/repo/discgroup.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-18
+internal/auth/seed.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-64
+internal/repo/sqlite/tcatbal_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-123
+internal/repo/sqlite/account_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-155
+internal/cobolfmt/zoned_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-187
+internal/domain/transtype.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-358
+internal/domain/doc.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-18
+internal/web/auth/handlers.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-468
+internal/web/doc.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-26
+migrations/0001_init.sql
+  s_aad0813b255393::t_73ba22a5bddac5 1-114
+internal/web/layout/layout.go
+  s_aad0813b255393::t_005208c3f8e258 1-104
+internal/service/transaction/service.go
+  s_aad0813b255393::t_8f674c7b5f7499 1-284
+internal/web/transaction/handlers.go
+  s_aad0813b255393::t_ffef083eeb9a9f 1-417
+internal/service/transaction/service_test.go
+  s_aad0813b255393::t_73e98ecf6c9e65 1-432
+internal/batch/doc.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-22
+internal/web/transaction/handlers_test.go
+  s_aad0813b255393::t_4eabe278e2faa8 1-94,97-111,113-391
+  s_aad0813b255393::t_55a4b3ab128ef3 95-96,112
+internal/cobolfmt/packed_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-263
+docs/adr/0009-testing.md
+  s_aad0813b255393::t_73ba22a5bddac5 1-27
+internal/auth/csrf.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-41
+internal/web/auth/handlers_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-359
+cmd/seed/main.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-349
+internal/repo/sqlite/trantype.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-81
+internal/repo/card.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-20
+internal/auth/service_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-193
+internal/cobolfmt/doc.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-20
+internal/repo/sqlite/usersec.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-93
+internal/web/menu/handlers.go
+  s_aad0813b255393::t_005208c3f8e258 1-140
+Makefile
+  s_aad0813b255393::t_73ba22a5bddac5 2-41
+  s_aad0813b255393::t_005208c3f8e258 1
+internal/repo/account.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-19
+docs/adr/0002-module-layout.md
+  s_aad0813b255393::t_73ba22a5bddac5 1-31
+internal/repo/cardxref.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-22
+internal/repo/sqlite/usersec_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-82
+internal/repo/transaction.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-23
+internal/repo/trancat.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-18
+internal/audit/doc.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-15
+internal/repo/sqlite/transaction_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-133
+internal/domain/customer.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-198
+go.sum
+  ai_agent 1-59
+internal/cobolfmt/ebcdic.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-85
+internal/repo/sqlite/account.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-110
+internal/audit/audit.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-78
+internal/service/doc.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-23
+.golangci.yml
+  s_aad0813b255393::t_73ba22a5bddac5 1-38
+internal/cobolfmt/binary_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-102
+internal/cobolfmt/date.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-114
+internal/repo/tcatbal.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-19
+docs/adr/0001-auth-architecture.md
+  s_aad0813b255393::t_73ba22a5bddac5 1-67
+internal/auth/doc.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-12
+internal/domain/usersec_record.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-106
+internal/repo/customer.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-19
+internal/domain/roundtrip_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-378
+internal/repo/usersec.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-18,21-99
+  s_aad0813b255393::t_005208c3f8e258 19-20
+internal/auth/ratelimit_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-70
+docs/adr/0003-http-framework.md
+  s_aad0813b255393::t_73ba22a5bddac5 1-30
+static/app.css
+  s_aad0813b255393::t_005208c3f8e258 1-164
+internal/cobolfmt/zoned.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-141
+internal/auth/password.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-40
+internal/cobolfmt/date_test.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-131
+internal/repo/sqlite/transaction.go
+  s_aad0813b255393::t_73ba22a5bddac5 1-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "66d5a7b57972f3e1d2186b47eb151d339b90153a",
+  "prompts": {},
+  "sessions": {
+    "s_aad0813b255393": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6bdc56fe-747c-446d-8fd6-18e3fe4a422a",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 12313,
+      "total_deletions": 53,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
