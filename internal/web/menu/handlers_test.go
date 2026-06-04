@@ -13,8 +13,11 @@ import (
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/audit"
 	authpkg "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/auth"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/repo"
+	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/repo/sqlite"
+	cardsvc "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/service/card"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web"
 	webauth "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/auth"
+	webcardmod "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/card"
 )
 
 // testEnv wires the full router for integration testing.
@@ -38,7 +41,15 @@ func newTestEnv(t *testing.T) *testEnv {
 	authH := webauth.NewHandlers(svc)
 	authH.CookieOptions.Secure = false
 
-	router := web.NewRouter(authH, store, sink)
+	// Wire a minimal card handler backed by an in-memory SQLite for the router.
+	memDB, err := sqlite.Open(":memory:")
+	if err != nil {
+		t.Fatalf("sqlite: %v", err)
+	}
+	t.Cleanup(func() { memDB.Close() })
+	cardH := webcardmod.NewHandlers(cardsvc.NewService(sqlite.NewCardStore(memDB), sqlite.NewCardXrefStore(memDB)))
+
+	router := web.NewRouter(authH, cardH, store, sink)
 	srv := httptest.NewServer(router)
 	t.Cleanup(srv.Close)
 

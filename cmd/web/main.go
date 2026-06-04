@@ -1,6 +1,5 @@
 // Command web is the CardDemo online (CICS) front-end server.
 // It replaces all BMS-screen-driven CICS transactions with an HTTP/HTML app.
-// RAU-43 wires the chi router, shared layout, and all 17 BMS-map routes.
 package main
 
 import (
@@ -13,8 +12,11 @@ import (
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/audit"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/auth"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/repo"
+	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/repo/sqlite"
+	cardsvc "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/service/card"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web"
 	webauth "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/auth"
+	webcardmod "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/card"
 )
 
 func main() {
@@ -22,6 +24,17 @@ func main() {
 	if addr == "" {
 		addr = ":8080"
 	}
+	dbPath := os.Getenv("CARDDEMO_DB_PATH")
+	if dbPath == "" {
+		dbPath = "carddemo.sqlite"
+	}
+
+	// Open (or create) the SQLite database.
+	db, err := sqlite.Open(dbPath)
+	if err != nil {
+		log.Fatalf("db: %v", err)
+	}
+	defer db.Close()
 
 	// In-memory stores — swap for Redis + Postgres in production.
 	userRepo := repo.NewInMemoryUserSec()
@@ -39,10 +52,16 @@ func main() {
 	}
 	cancel()
 
-	authHandlers := webauth.NewHandlers(authSvc)
-	router := web.NewRouter(authHandlers, sessionStore, auditSink)
+	// Card service wired to SQLite-backed repositories.
+	cardStore := sqlite.NewCardStore(db)
+	xrefStore := sqlite.NewCardXrefStore(db)
+	cardService := cardsvc.NewService(cardStore, xrefStore)
 
-	log.Printf("carddemo-web listening on %s", addr)
+	authHandlers := webauth.NewHandlers(authSvc)
+	cardHandlers := webcardmod.NewHandlers(cardService)
+	router := web.NewRouter(authHandlers, cardHandlers, sessionStore, auditSink)
+
+	log.Printf("carddemo-web listening on %s (db: %s)", addr, dbPath)
 	if err := http.ListenAndServe(addr, router); err != nil {
 		log.Fatalf("web server: %v", err)
 	}

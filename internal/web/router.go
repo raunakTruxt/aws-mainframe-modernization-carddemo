@@ -9,6 +9,7 @@ import (
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/audit"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/auth"
 	webauth "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/auth"
+	webcardmod "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/card"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/layout"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/menu"
 )
@@ -26,6 +27,7 @@ import (
 // silently allowed into protected routes.
 func NewRouter(
 	authH *webauth.Handlers,
+	cardH *webcardmod.Handlers,
 	store auth.SessionStore,
 	auditSink audit.Sink,
 ) http.Handler {
@@ -67,9 +69,12 @@ func NewRouter(
 		// so all 17 BMS maps are reachable; the owning issue replaces the stub.
 		r.Get("/account/view", stubHandler("Account View"))
 		r.Get("/account/update", stubHandler("Account Update"))
-		r.Get("/cards/list", stubHandler("Credit Card List"))
-		r.Get("/cards/view", stubHandler("Credit Card View"))
-		r.Get("/cards/update", stubHandler("Credit Card Update"))
+
+		// COCRDLIC / COCRDSLC / COCRDUPC — card list, view, update (RAU-41).
+		r.Get("/cards/list", cardH.GetList)
+		r.Get("/cards/view", cardH.GetView)
+		r.Get("/cards/update", cardH.GetUpdate)
+		r.Post("/cards/update", cardH.PostUpdate)
 		r.Get("/transactions", stubHandler("Transaction List"))
 		r.Get("/transactions/view", stubHandler("Transaction View"))
 		r.Get("/transactions/add", stubHandler("Transaction Add"))
