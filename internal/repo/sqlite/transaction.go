@@ -67,6 +67,20 @@ func (s *TransactionStore) Delete(ctx context.Context, tranID string) error {
 	return requireAffected(res)
 }
 
+// NextID returns the next TRAN-ID by taking MAX(CAST(tran_id AS INTEGER))+1.
+// Non-numeric tran_ids (e.g. test fixtures prefixed with 'T') cast to 0 and
+// are harmlessly ignored. Call this inside a database transaction so the
+// max-read and subsequent insert are serialized against concurrent writers.
+func (s *TransactionStore) NextID(ctx context.Context) (string, error) {
+	row := s.db.QueryRowContext(ctx,
+		`SELECT COALESCE(MAX(CAST(tran_id AS INTEGER)), 0) + 1 FROM transactions`)
+	var next int64
+	if err := row.Scan(&next); err != nil {
+		return "", fmt.Errorf("sqlite: transaction next id: %w", err)
+	}
+	return fmt.Sprintf("%016d", next), nil
+}
+
 func (s *TransactionStore) Browse(ctx context.Context, startID string, limit int) ([]*domain.TransactionRecord, error) {
 	if limit <= 0 {
 		limit = -1

@@ -20,4 +20,9 @@ type TransactionRepository interface {
 	// Browse returns up to limit records with tranID >= startID, ordered by tranID.
 	// startID="" returns from the beginning. limit <= 0 returns all matching rows.
 	Browse(ctx context.Context, startID string, limit int) ([]*domain.TransactionRecord, error)
+	// NextID returns the next available TRAN-ID — the current max numeric tran_id
+	// incremented by one, zero-padded to 16 digits (legacy PIC 9(16) format).
+	// Mirrors the COBOL READPREV / max-id+1 pattern from COTRN02C.
+	// Must be called inside a database transaction to prevent collisions.
+	NextID(ctx context.Context) (string, error)
 }

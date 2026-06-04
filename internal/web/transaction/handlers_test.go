@@ -34,6 +34,7 @@ func newTestDB(t *testing.T) *sql.DB {
 func newHandlers(t *testing.T, db *sql.DB) *webtxn.Handlers {
 	t.Helper()
 	s := svc.New(
+		sqlite.NewTransactor(db),
 		sqlite.NewTransactionStore(db),
 		sqlite.NewAccountStore(db),
 		sqlite.NewCardStore(db),

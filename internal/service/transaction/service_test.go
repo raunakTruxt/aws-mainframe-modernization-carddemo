@@ -29,6 +29,7 @@ func newService(t *testing.T, db *sql.DB) *svc.Service {
 	t.Helper()
 	fixedNow := time.Date(2024, 1, 15, 12, 0, 0, 0, time.UTC)
 	s := svc.New(
+		sqlite.NewTransactor(db),
 		sqlite.NewTransactionStore(db),
 		sqlite.NewAccountStore(db),
 		sqlite.NewCardStore(db),
@@ -428,5 +429,104 @@ func TestPay_DecimalPrecision(t *testing.T) {
 	}
 	if !acct.AcctCurrBal.Equal(decimal.RequireFromString("499.99")) {
 		t.Fatalf("balance: want 499.99, got %s", acct.AcctCurrBal)
+	}
+}
+
+// TestAdd_TranIDNumericFormat verifies that generated TRAN-IDs are all-numeric
+// 16-character strings, matching the legacy COBOL PIC 9(16) format.
+func TestAdd_TranIDNumericFormat(t *testing.T) {
+	ctx := context.Background()
+	db := newTestDB(t)
+	s := newService(t, db)
+	cardNum, _ := seedBasicData(t, db)
+
+	rec, err := s.Add(ctx, svc.AddRequest{
+		TranTypeCode: "01", TranCatCode: 1000, TranSource: "POS",
+		TranDesc: "TEST", TranAmt: decimal.RequireFromString("1.00"),
+		TranCardNum: cardNum,
+	})
+	if err != nil {
+		t.Fatalf("add: %v", err)
+	}
+	if len(rec.TranID) != 16 {
+		t.Fatalf("want 16-char tran id, got %q (len %d)", rec.TranID, len(rec.TranID))
+	}
+	for _, ch := range rec.TranID {
+		if ch < '0' || ch > '9' {
+			t.Fatalf("non-numeric char %q in tran id %q", ch, rec.TranID)
+		}
+	}
+}
+
+// TestAdd_TranIDMonotonic verifies that successive TRAN-IDs increase.
+func TestAdd_TranIDMonotonic(t *testing.T) {
+	ctx := context.Background()
+	db := newTestDB(t)
+	s := newService(t, db)
+	cardNum, _ := seedBasicData(t, db)
+
+	r1, err := s.Add(ctx, svc.AddRequest{
+		TranTypeCode: "01", TranCatCode: 1000, TranSource: "POS",
+		TranDesc: "FIRST", TranAmt: decimal.RequireFromString("1.00"),
+		TranCardNum: cardNum,
+	})
+	if err != nil {
+		t.Fatalf("add 1: %v", err)
+	}
+
+	// Adjust credit limit for second add.
+	acctStore := sqlite.NewAccountStore(db)
+	acct, _ := acctStore.Get(ctx, int64(11111111111))
+	acct.AcctCreditLimit = decimal.RequireFromString("10000.00")
+	_ = acctStore.Update(ctx, acct)
+
+	r2, err := s.Add(ctx, svc.AddRequest{
+		TranTypeCode: "01", TranCatCode: 1000, TranSource: "POS",
+		TranDesc: "SECOND", TranAmt: decimal.RequireFromString("1.00"),
+		TranCardNum: cardNum,
+	})
+	if err != nil {
+		t.Fatalf("add 2: %v", err)
+	}
+
+	if r2.TranID <= r1.TranID {
+		t.Fatalf("second id %q must be greater than first %q", r2.TranID, r1.TranID)
+	}
+}
+
+// TestPay_AtomicityPayCreateAndBalanceUpdate verifies that the transaction row
+// and account balance update are always consistent: if no error is returned,
+// exactly one row exists and the balance is decremented by exactly the paid amount.
+func TestPay_AtomicityPayCreateAndBalanceUpdate(t *testing.T) {
+	ctx := context.Background()
+	db := newTestDB(t)
+	s := newService(t, db)
+	cardNum, acctID := seedBasicData(t, db)
+
+	payAmt := decimal.RequireFromString("123.45")
+	if _, err := s.Pay(ctx, svc.PayRequest{CardNum: cardNum, Amt: payAmt}); err != nil {
+		t.Fatalf("pay: %v", err)
+	}
+
+	// Exactly one row.
+	txns, err := s.List(ctx, cardNum, "", 0)
+	if err != nil {
+		t.Fatalf("list: %v", err)
+	}
+	if len(txns) != 1 {
+		t.Fatalf("want 1 txn row, got %d", len(txns))
+	}
+	if !txns[0].TranAmt.Equal(payAmt) {
+		t.Fatalf("row amt: want %s, got %s", payAmt, txns[0].TranAmt)
+	}
+
+	// Balance decremented by exactly payAmt.
+	acct, err := sqlite.NewAccountStore(db).Get(ctx, acctID)
+	if err != nil {
+		t.Fatalf("get account: %v", err)
+	}
+	want := decimal.RequireFromString("500.00").Sub(payAmt)
+	if !acct.AcctCurrBal.Equal(want) {
+		t.Fatalf("balance: want %s, got %s", want, acct.AcctCurrBal)
 	}
 }
