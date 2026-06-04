@@ -1,0 +1,229 @@
+internal/domain/export.go
+  s_a05201fcf8e515::t_a81fbeee619866 1-797
+internal/repo/trancat.go
+  s_efd833b199c90e::t_4f9bcff0a950a6 1-18
+internal/repo/sqlite/usersec.go
+  s_efd833b199c90e::t_045ab71ed515f2 14,16-17
+  s_efd833b199c90e::t_13f060d3fe6727 79-80
+  s_efd833b199c90e::t_aa01d7b57e3b03 1-13,15,18-78,81-93
+internal/repo/sqlite/trancat.go
+  ai_agent 1-95
+internal/repo/sqlite/card_test.go
+  s_efd833b199c90e::t_b0491cb57656fe 1-26,35-36,38-41,46-47,49-55,61,63,65-67,70-72,80,82-83,85-86,97-102,113
+  s_efd833b199c90e::t_8642204644952c 27-34,37,42-45,48,56-60,62,64,68-69,73-79,81,84,87-96,103-111
+go.mod
+  s_3d472687ebbaa8::t_709f9d3c4c3906 5,23
+  s_efd833b199c90e::t_9195f5c04e4f54 15-16,18-21
+  s_114db9495acd0b::t_dd0cd12280185a 13-14,17,22
+  s_3d472687ebbaa8::t_c1404b4ec80df8 7-9
+  s_efd833b199c90e::t_b56cea9159357f 10
+internal/repo/sqlite/transaction_test.go
+  s_efd833b199c90e::t_d3d1b9d1b42861 1-34,43-44,46-49,57-58,61-66,81,83,85-87,90-92,100,102-103,114-115,117-122,133
+  s_efd833b199c90e::t_84f9085012d6ad 35-42,45,50-56,59-60,67-80,82,84,88-89,93-99,101,104-113,116,123-131
+cmd/seed/main.go
+  ai_agent 1-349
+internal/repo/sqlite/usersec_test.go
+  s_efd833b199c90e::t_5f33f0efbf6bcd 1-25,27-30,34-35,37,39-41,44-46,53-59,64,66-69,71-76,82
+  s_efd833b199c90e::t_4d0cdb032ead00 26,31-33,36,38,42-43,47-52,60-63,65,70,77-80
+internal/repo/sqlite/tcatbal.go
+  s_efd833b199c90e::t_f8a94b0a073743 15,17-18
+  s_efd833b199c90e::t_a6f3a8ba058801 1-14,16,19-111
+internal/repo/sqlite/db.go
+  s_efd833b199c90e::t_c1874d40eb4efe 1-30
+go.sum
+  ai_agent 1,4-21,24-62
+internal/repo/tcatbal.go
+  s_efd833b199c90e::t_5eea954cace596 1-19
+internal/domain/customer.go
+  s_3d472687ebbaa8::t_89eac2a168ed94 1-198
+internal/cobolfmt/packed.go
+  ai_agent 1-165
+internal/repo/sqlite/cardxref.go
+  ai_agent 1-107
+internal/repo/trantype.go
+  s_efd833b199c90e::t_9b22e2f73b3dc8 1-17
+internal/cobolfmt/zoned.go
+  s_3d472687ebbaa8::t_87402fba1bcfe7 1-141
+internal/domain/account.go
+  s_3d472687ebbaa8::t_df7e40842c7773 1-182
+internal/repo/sqlite/cardxref_test.go
+  s_efd833b199c90e::t_85cbe7b527b1da 1-19,28-29,31-34,37-38,40-46,52,54-60,66,68,70-72,75-77,85,87-88,90-91,102-107,118
+  s_efd833b199c90e::t_d98b0cb3b9ca84 20-27,30,35-36,39,47-51,53,61-65,67,69,73-74,78-84,86,89,92-101,108-116
+internal/repo/sqlite/trancat_test.go
+  s_efd833b199c90e::t_9f7e87a57a849d 1-15,24-25,27-30,33-34,36-42,48,50-53,55-58,65-72,74-79,90
+  s_efd833b199c90e::t_b3c2f9267fb1ff 16-23,26,31-32,35,43-47,49,54,59-64,73,80-88
+internal/repo/discgroup.go
+  s_efd833b199c90e::t_6122cd2e172721 1-18
+internal/repo/sqlite/assertions.go
+  s_efd833b199c90e::t_7ab00092dd8895 1-16
+internal/repo/sqlite/helpers.go
+  s_efd833b199c90e::t_b8ef06a8880e79 1-3,5-17,26-43
+  s_efd833b199c90e::t_6f046538bc2242 4,18-23
+internal/cobolfmt/ebcdic_test.go
+  s_3d472687ebbaa8::t_6b54fca5eb2762 1-141
+internal/repo/card.go
+  s_efd833b199c90e::t_455a7bc68e8c39 17-18
+  s_efd833b199c90e::t_d2f00d69bd31ce 1-16,19-20
+internal/cobolfmt/packed_test.go
+  s_3d472687ebbaa8::t_689a75cd189555 1-3,5-42,45,47-48,56-60,71-75,77-81,83-87,89-113,185-186,192,204-212,214-231
+  s_a05201fcf8e515::t_78c52b5dc50f4b 4,43-44,46,49-55,61-70,76,82,88,114-184,187-191,193-203,213,232-259
+internal/repo/sqlite/trantype.go
+  s_efd833b199c90e::t_b82b4ac9c3d10c 1-13,15,18-81
+  s_efd833b199c90e::t_e850ea9c49d175 14,16-17
+Makefile
+  s_804c7e7d564f7e::t_a78f66b9981fef 1,38
+  s_efd833b199c90e::t_056e2be15438d7 35-37
+internal/cobolfmt/binary_test.go
+  s_3d472687ebbaa8::t_97b5875c41b6f0 1-64,66,76-86,88-91,93-102
+  s_3d472687ebbaa8::t_f7843afc93d8e7 65,67-75,87,92
+internal/repo/transaction.go
+  s_efd833b199c90e::t_944b5d60ee770a 1-13,16-19,22-23
+  s_efd833b199c90e::t_e1d3b3de5821ef 14-15,20-21
+internal/repo/sqlite/discgroup_test.go
+  s_efd833b199c90e::t_3080f8ed9c73ba 26-33,36,41-53,56,64-68,70,75,80-85,90-91,94,101-109
+  s_efd833b199c90e::t_64ec321d30bd29 1-25,34-35,37-40,54-55,57-63,69,71-74,76-79,86-89,92-93,95-100,111
+internal/domain/roundtrip_test.go
+  s_a05201fcf8e515::t_ac54ae75728613 326-372
+  s_3d472687ebbaa8::t_dbaaf1926656d6 1-325,373-378
+internal/repo/account.go
+  s_efd833b199c90e::t_c97e2ccf4f1340 17
+  s_efd833b199c90e::t_02e94bd845195e 1-16,18-19
+internal/repo/sqlite/discgroup.go
+  s_efd833b199c90e::t_de57d2ed802403 15,17-18
+  s_efd833b199c90e::t_215da7fcd749dc 1-14,16,19-102
+internal/repo/sqlite/card.go
+  s_efd833b199c90e::t_016cea60b4406b 1-13,15,18-64,68-98
+  s_efd833b199c90e::t_3b92a8d4d9ce24 14,16-17
+  s_efd833b199c90e::t_2804f57c5200a1 65-67
+internal/repo/sqlite/schema.sql
+  s_efd833b199c90e::t_afe1cfddd4212d 1-114
+internal/cobolfmt/binary.go
+  s_3d472687ebbaa8::t_deacea4f1eee5d 1-84
+internal/repo/sqlite/account.go
+  s_efd833b199c90e::t_f93b8d5f2eaae5 61-63
+  s_efd833b199c90e::t_13f060d3fe6727 83
+  s_efd833b199c90e::t_ec97f30d149947 1-14,16,19-60,64-82,84-110
+  s_efd833b199c90e::t_f794142c2780d3 15,17-18
+internal/repo/sqlite/account_test.go
+  ai_agent 1-155
+internal/repo/sqlite/trantype_test.go
+  s_efd833b199c90e::t_0bbbd76764227f 16-20,22-23,26,31-32,35,40,45-50,58-61,63,70-78
+  s_efd833b199c90e::t_2e3c04279880c1 1-15,21,24-25,27-30,33-34,36-39,41-44,51-57,62,64-69,80
+.gitignore
+  s_efd833b199c90e::t_d214b29367986a 9
+internal/cobolfmt/ebcdic.go
+  s_3d472687ebbaa8::t_dee5cfdec2addc 80-85
+  s_3d472687ebbaa8::t_ebf6a2b2ec0ec0 1-79
+internal/domain/usersec_record.go
+  s_3d472687ebbaa8::t_c9c5c74f85afc8 1-106
+internal/cobolfmt/zoned_test.go
+  s_3d472687ebbaa8::t_f1c3f1f16f92cb 1-187
+internal/repo/sqlite/transaction.go
+  s_efd833b199c90e::t_21a43a836ea559 28-30
+  s_efd833b199c90e::t_0ded69a18566c3 15,17-18
+  s_efd833b199c90e::t_df9cf472c0e90d 71-73
+  s_efd833b199c90e::t_cb2f45a4d93c6a 1-14,16,19-27,31-70,74-111
+internal/repo/customer.go
+  s_efd833b199c90e::t_7c2fc83782f58b 1-15,18-19
+  s_efd833b199c90e::t_00053b2da1f6d5 16-17
+internal/domain/card.go
+  s_3d472687ebbaa8::t_aabeeabcefa4b6 1-209
+internal/repo/usersec.go
+  s_efd833b199c90e::t_33e2830988408e 19-20
+migrations/0001_init.sql
+  s_efd833b199c90e::t_f14185f50a5cca 1-114
+internal/repo/sqlite/customer_test.go
+  s_efd833b199c90e::t_2ae8dccddb0752 39-46,49,54-58,61,63-64,68-79,81,83-84,87-88,90,92-93,96,103-111
+  s_efd833b199c90e::t_fdf0f3ceb49fc2 1-38,47-48,50-53,59-60,62,65-67,80,82,85-86,89,91,94-95,97-102,113
+internal/domain/transtype.go
+  s_3d472687ebbaa8::t_66ecb33499c448 242-243
+  s_3d472687ebbaa8::t_e0036167212c9c 1-60,63-145,148-241,244-337,340-358
+  s_3d472687ebbaa8::t_0d92e19e8b01c9 338-339
+  s_3d472687ebbaa8::t_de7bb93e2dd01c 146-147
+  s_3d472687ebbaa8::t_9da31fc8bb09b6 61-62
+internal/cobolfmt/date.go
+  s_3d472687ebbaa8::t_c909767cb19b1c 109
+  s_3d472687ebbaa8::t_ee1e1d6e1d9666 1-108,110-114
+internal/cobolfmt/date_test.go
+  s_3d472687ebbaa8::t_a353460d59938a 1-131
+internal/repo/cardxref.go
+  s_efd833b199c90e::t_ac764dfc35c05d 19-20
+  s_efd833b199c90e::t_f898fdf108da8f 1-18,21-22
+internal/domain/transaction.go
+  s_3d472687ebbaa8::t_4c46b363a3f051 1-315
+internal/repo/sqlite/customer.go
+  s_efd833b199c90e::t_0ac079ef023599 14,16-17
+  s_efd833b199c90e::t_4214e6dcfd3c74 60-62
+  s_efd833b199c90e::t_97dee602eb5005 1-13,15,18-59,63-92
+internal/repo/sqlite/tcatbal_test.go
+  s_efd833b199c90e::t_ab77cb66d45152 26-33,36,41-43,46-56,64-68,70,75,80-84,86,89,92,97,102-103,106,113-121
+  s_efd833b199c90e::t_d646cf3c46e62e 1-25,34-35,37-40,44-45,57-63,69,71-74,76-79,85,87-88,90-91,93-96,98-101,104-105,107-112,123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "cc492b67ebbb9946c488bf1386bd27d8b6dcf788",
+  "prompts": {},
+  "sessions": {
+    "s_114db9495acd0b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "769ffad6-11cf-45f0-9457-cb9a92a37903",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "s_3d472687ebbaa8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a9de9b2c-1b0a-4362-bc1e-89aa37914302",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "s_804c7e7d564f7e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "918097b1-ecfe-427a-9a7d-eb6461d0108a",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "s_a05201fcf8e515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4c54f6c-8922-420d-8eca-b9cae08b0881",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "s_efd833b199c90e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8ffa3db9-8e76-4e0a-ada6-54a5264fd1c5",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
