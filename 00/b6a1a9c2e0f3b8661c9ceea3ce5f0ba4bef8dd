@@ -1,0 +1,37 @@
+static/app.css
+  s_fad5935d154caa::t_abb0f50d6af2ff 1-164
+cmd/web/main.go
+  s_fad5935d154caa::t_abb0f50d6af2ff 3,7,11-17,26-43,46
+internal/web/layout/layout.go
+  s_fad5935d154caa::t_abb0f50d6af2ff 1-104
+internal/web/menu/handlers_test.go
+  s_fad5935d154caa::t_abb0f50d6af2ff 1-313
+go.sum
+  ai_agent 3-4
+go.mod
+  ai_agent 6
+internal/web/menu/handlers.go
+  s_fad5935d154caa::t_abb0f50d6af2ff 1-140
+internal/web/router.go
+  s_fad5935d154caa::t_abb0f50d6af2ff 1-122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "00b6a1a9c2e0f3b8661c9ceea3ce5f0ba4bef8dd",
+  "prompts": {},
+  "sessions": {
+    "s_fad5935d154caa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff6e6443-df9e-4583-89c2-fcdf4d6a286a",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 871,
+      "total_deletions": 7,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
