@@ -1,0 +1,43 @@
+internal/web/menu/handlers_test.go
+  s_529dfa8763b71d::t_5650ce4824011b 16-17,20
+  s_529dfa8763b71d::t_7cc17ef3ccac65 44-52
+internal/service/card/service_test.go
+  s_529dfa8763b71d::t_026c20894b4127 1-277
+internal/web/router.go
+  s_529dfa8763b71d::t_46d3a068746e9b 72-77
+  s_529dfa8763b71d::t_61c106198c1b6f 30
+  s_529dfa8763b71d::t_5d73b25b6bd04f 12
+cmd/web/main.go
+  s_529dfa8763b71d::t_354949e0bc420b 15-16,19,27-37,55-59,61-62,64
+internal/web/card/handlers_test.go
+  s_529dfa8763b71d::t_6664c4eec657ec 1-143,147-157,159,161-277
+  s_529dfa8763b71d::t_ee68c4e7ff8304 158,160
+  s_529dfa8763b71d::t_cfc9051850ca47 144-146
+internal/service/card/service.go
+  s_529dfa8763b71d::t_cf0290cbf57400 1-186
+internal/web/card/handlers.go
+  s_529dfa8763b71d::t_46b78ccdd1cacd 198-208
+  s_529dfa8763b71d::t_fe1716a92db17e 247,251-252,258-260
+  s_529dfa8763b71d::t_cb372042bf99ef 1-127,139-152,155-160,163-165,168-172,176-197,209-246,248-250,253-257,261-318
+  s_529dfa8763b71d::t_977327cf4a0e53 128-138,153-154,161-162,166-167,173-175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "7616c9460866d69c585851619f9e6ecbc2bfebf5",
+  "prompts": {},
+  "sessions": {
+    "s_529dfa8763b71d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "34811c30-d614-4000-b75d-eabe7e764aec",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 1113,
+      "total_deletions": 20,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
