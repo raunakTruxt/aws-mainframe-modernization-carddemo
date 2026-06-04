@@ -1,0 +1,55 @@
+cmd/web/main.go
+  s_fad5935d154caa::t_4223df340d7c78 15-16,18,28-45,52,59-62,64-66
+internal/web/router.go
+  s_fad5935d154caa::t_2b27818f5976b5 11
+  s_fad5935d154caa::t_837ac13d893e53 67
+  s_fad5935d154caa::t_f1685393911f28 30
+  s_fad5935d154caa::t_9d3a0ff7164213 68-76
+internal/service/account/service_test.go
+  s_fad5935d154caa::t_7a9f87e7c67900 1-442
+internal/web/account/handlers.go
+  s_fad5935d154caa::t_698e936c437cc1 531-533,555,557,569,578,595-605
+  s_fad5935d154caa::t_c24555878fe481 489
+  s_fad5935d154caa::t_06933c46ea615a 1-34,38-66,72-405,414-460,462-488,490-530,534-554,556,558-568,570-577,579-594,606-610
+  s_fad5935d154caa::t_bad52735650697 461
+  s_fad5935d154caa::t_62c8923830ed7f 35-37
+  s_fad5935d154caa::t_54760f85b92fa7 67-71
+  s_fad5935d154caa::t_744bb617d79ef3 406-413
+internal/service/account/service.go
+  s_fad5935d154caa::t_13606fabd7b227 1-542
+internal/web/account/handlers_test.go
+  s_fad5935d154caa::t_1ea61adebbfbc1 211,226,247,265,291,306,325,350
+  s_fad5935d154caa::t_db33d3ac7eee1f 28-29,53-54,63-65,67,71
+  s_fad5935d154caa::t_ca040e72632172 119-122,132,134-136
+  s_fad5935d154caa::t_e062a5072f310d 5
+  s_fad5935d154caa::t_6dcac9dd20899a 114
+  s_fad5935d154caa::t_310b99db06a148 16,22
+  s_fad5935d154caa::t_49aa5280dee25d 195,200
+  s_fad5935d154caa::t_038598c89ca6b2 433-434,437
+  s_fad5935d154caa::t_a80d5909f33a19 317-318
+  s_fad5935d154caa::t_920d032d912602 1-4,6-15,17-21,23-27,30-52,55-62,66,68-70,72-113,115-118,123-131,133,137-194,196-199,201-210,212-225,227-246,248-264,266-290,292-305,307-316,319-324,326-349,351-432,435-436,438-445
+internal/service/customer/service.go
+  s_fad5935d154caa::t_bc57ccfaa9f3e6 1-50
+internal/web/menu/handlers_test.go
+  s_fad5935d154caa::t_6eef822a5dc694 41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "42cdc130cdefd4a5d4776dbc67a977d6d9837c5a",
+  "prompts": {},
+  "sessions": {
+    "s_fad5935d154caa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff6e6443-df9e-4583-89c2-fcdf4d6a286a",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 2217,
+      "total_deletions": 98,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
