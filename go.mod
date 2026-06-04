@@ -3,6 +3,7 @@ module github.com/aws-samples/aws-mainframe-modernization-carddemo
 go 1.26.2
 
 require (
+	github.com/go-chi/chi/v5 v5.3.0
 	github.com/shopspring/decimal v1.4.0
 	golang.org/x/crypto v0.50.0
 	golang.org/x/text v0.36.0
