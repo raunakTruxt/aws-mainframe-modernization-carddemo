@@ -288,7 +288,7 @@ func TestRun_defaultGroupFallback(t *testing.T) {
 	}); err != nil {
 		t.Fatalf("create account: %v", err)
 	}
-	// Only a DEFAULT   row exists (space-padded to 10, matching discGroupDefault constant).
+	// Seed with trimmed key — mirrors what DecodeEBCDICTrimmed produces from the EBCDIC file.
 	if err := discStore.Create(ctx, &domain.DiscGroupRecord{
 		DisAcctGroupID: discGroupDefault,
 		DisTranTypeCD:  "PR",

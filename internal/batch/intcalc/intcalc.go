@@ -24,8 +24,9 @@ import (
 
 var twelve = decimal.NewFromInt(1200)
 
-// discGroupDefault is the COBOL fallback group key (CVTRA02Y.cpy:6, X(10) space-padded).
-const discGroupDefault = "DEFAULT   "
+// discGroupDefault is the COBOL fallback group key. DecodeEBCDICTrimmed strips trailing spaces
+// on load, so the stored value is "DEFAULT" (trimmed), not the COBOL X(10) "DEFAULT   ".
+const discGroupDefault = "DEFAULT"
 
 // Config holds the dependencies for the intcalc subcommand.
 type Config struct {
