@@ -1,0 +1,25 @@
+internal/batch/intcalc/intcalc_test.go
+  s_32a3fd06ab8851::t_237967292a0e5c 291
+internal/batch/intcalc/intcalc.go
+  s_32a3fd06ab8851::t_37a6ac11a58289 27-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "ffd6afd9e5cceb009161180bc6f79efb94186f7b",
+  "prompts": {},
+  "sessions": {
+    "s_32a3fd06ab8851": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d8f3e60-39af-48c9-a890-832c759be1c5",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 4,
+      "total_deletions": 3,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
