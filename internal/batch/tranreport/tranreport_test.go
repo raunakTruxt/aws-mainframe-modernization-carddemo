@@ -51,6 +51,7 @@ func TestRun_basicReport(t *testing.T) {
 			TranAmt:      decimal.NewFromFloat(amt),
 			TranCardNum:  "4111111111111111",
 			TranOrigTS:   "2022-07-18 00:00:00.000000",
+			TranProcTS:   "2022-07-18 00:00:00.000000",
 			TranSource:   "Online",
 			TranDesc:     "Test",
 		}
@@ -103,7 +104,8 @@ func TestRun_dateFilter(t *testing.T) {
 			TranTypeCode: "PR",
 			TranAmt:      decimal.NewFromFloat(10.00),
 			TranCardNum:  "4111111111111111",
-			TranOrigTS:   date + " 00:00:00.000000",
+			TranOrigTS:   "2022-06-01 00:00:00.000000", // orig-ts is always before; filter uses proc-ts
+			TranProcTS:   date + " 00:00:00.000000",
 		}
 		if err := tranStore.Create(ctx, tran); err != nil {
 			t.Fatalf("create tran: %v", err)

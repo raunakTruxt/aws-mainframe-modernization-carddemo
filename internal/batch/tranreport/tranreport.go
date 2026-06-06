@@ -28,8 +28,8 @@ type Config struct {
 	CardXrefs    repo.CardXrefRepository
 	TranTypes    repo.TranTypeRepository
 	TranCats     repo.TranCatRepository
-	DateFrom     string // YYYY-MM-DD optional; filter origTS >= DateFrom
-	DateTo       string // YYYY-MM-DD optional; filter origTS <= DateTo
+	DateFrom     string // YYYY-MM-DD optional; filter procTS >= DateFrom (CBTRN03C.cbl:173)
+	DateTo       string // YYYY-MM-DD optional; filter procTS <= DateTo
 	Out          io.Writer
 }
 
@@ -68,14 +68,14 @@ func Run(ctx context.Context, cfg Config) (Summary, error) {
 
 	var filtered []*domain.TransactionRecord
 	for _, t := range all {
-		origDate := ""
-		if len(t.TranOrigTS) >= 10 {
-			origDate = t.TranOrigTS[:10]
+		procDate := ""
+		if len(t.TranProcTS) >= 10 {
+			procDate = t.TranProcTS[:10]
 		}
-		if cfg.DateFrom != "" && origDate < cfg.DateFrom {
+		if cfg.DateFrom != "" && procDate < cfg.DateFrom {
 			continue
 		}
-		if cfg.DateTo != "" && origDate > cfg.DateTo {
+		if cfg.DateTo != "" && procDate > cfg.DateTo {
 			continue
 		}
 		filtered = append(filtered, t)
@@ -90,7 +90,7 @@ func Run(ctx context.Context, cfg Config) (Summary, error) {
 		fmt.Fprintf(cfg.Out, "%s\n", centerPad(fmt.Sprintf("Page %d", page), pageWidth))
 		fmt.Fprintf(cfg.Out, "%s\n", strings.Repeat("-", pageWidth))
 		fmt.Fprintf(cfg.Out, "%-16s %-2s %-4s %-16s %-26s %11s  %-40s\n",
-			"TRAN-ID", "TY", "CAT", "CARD-NUM", "ORIG-TS", "AMOUNT", "DESCRIPTION")
+			"TRAN-ID", "TY", "CAT", "CARD-NUM", "PROC-TS", "AMOUNT", "DESCRIPTION")
 		fmt.Fprintf(cfg.Out, "%s\n", strings.Repeat("-", pageWidth))
 		lineCount = 5
 	}
@@ -148,9 +148,9 @@ func Run(ctx context.Context, cfg Config) (Summary, error) {
 			desc = desc[:40]
 		}
 
-		origTS := t.TranOrigTS
-		if len(origTS) > 26 {
-			origTS = origTS[:26]
+		procTS := t.TranProcTS
+		if len(procTS) > 26 {
+			procTS = procTS[:26]
 		}
 
 		fmt.Fprintf(cfg.Out, "%-16s %-2s %4d %-16s %-26s %11s  %-40s\n",
@@ -158,7 +158,7 @@ func Run(ctx context.Context, cfg Config) (Summary, error) {
 			strings.TrimSpace(t.TranTypeCode),
 			t.TranCatCode,
 			t.TranCardNum,
-			origTS,
+			procTS,
 			t.TranAmt.StringFixed(2),
 			desc,
 		)

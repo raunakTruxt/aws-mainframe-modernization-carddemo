@@ -119,22 +119,26 @@ func validate(ctx context.Context, db *sql.DB, dtr *domain.DailyTransactionRecor
 		return 101, "ACCOUNT RECORD NOT FOUND"
 	}
 
-	// Overlimit check: ACCT-CREDIT-LIMIT >= (ACCT-CURR-CYC-CREDIT - ACCT-CURR-CYC-DEBIT + DALYTRAN-AMT)
+	// Both checks run independently; 103 overwrites 102 when both apply (CBTRN02C.cbl:407-420).
+	reason := 0
+	desc := ""
+
 	tempBal := acct.AcctCurrCycCredit.Sub(acct.AcctCurrCycDebit).Add(dtr.DalytranAmt)
 	if acct.AcctCreditLimit.LessThan(tempBal) {
-		return 102, "OVERLIMIT TRANSACTION"
+		reason = 102
+		desc = "OVERLIMIT TRANSACTION"
 	}
 
-	// Expiration check: ACCT-EXPIRAION-DATE >= DALYTRAN-ORIG-TS[0:10]
 	origDate := ""
 	if len(dtr.DalytranOrigTS) >= 10 {
 		origDate = dtr.DalytranOrigTS[:10]
 	}
 	if acct.AcctExpirationDate < origDate {
-		return 103, "TRANSACTION RECEIVED AFTER ACCT EXPIRATION"
+		reason = 103
+		desc = "TRANSACTION RECEIVED AFTER ACCT EXPIRATION"
 	}
 
-	return 0, ""
+	return reason, desc
 }
 
 // post writes the transaction, updates the account, and upserts tran-cat-bal
@@ -156,6 +160,12 @@ func post(ctx context.Context, db *sql.DB, dtr *domain.DailyTransactionRecord, n
 	acct, err := acctStore.Get(ctx, xref.XrefAcctID)
 	if err != nil {
 		return fmt.Errorf("lookup account: %w", err)
+	}
+
+	// Check for duplicate before any balance writes so re-running the file is idempotent.
+	tranStore := sqlite.NewTransactionStore(tx)
+	if _, err := tranStore.Get(ctx, dtr.DalytranID); err == nil {
+		return tx.Rollback()
 	}
 
 	ts := now.Format("2006-01-02 15:04:05.000000")
@@ -211,13 +221,8 @@ func post(ctx context.Context, db *sql.DB, dtr *domain.DailyTransactionRecord, n
 		return fmt.Errorf("update account: %w", err)
 	}
 
-	// Write transaction record.
-	tranStore := sqlite.NewTransactionStore(tx)
+	// Write transaction record (dup already excluded by pre-check above).
 	if err := tranStore.Create(ctx, tran); err != nil {
-		if err == repo.ErrConflict {
-			// Idempotent: already posted.
-			return tx.Commit()
-		}
 		return fmt.Errorf("create transaction: %w", err)
 	}
 

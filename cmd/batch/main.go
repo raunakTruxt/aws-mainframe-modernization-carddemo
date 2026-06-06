@@ -666,7 +666,7 @@ func parseJobsYAML(src string) *jobsConfig {
 		// Args list items at indent 8
 		if indent == 8 && currentStep != nil && inArgs {
 			if len(stripped) > 2 && stripped[:2] == "- " {
-				currentStep.Args = append(currentStep.Args, stripped[2:])
+				currentStep.Args = append(currentStep.Args, stripQuotes(stripped[2:]))
 			}
 			continue
 		}
@@ -693,7 +693,7 @@ func applyStepField(s *stepDef, k, v string) {
 	case "command":
 		s.Command = v
 	case "skip":
-		s.Skip = v == "true"
+		s.Skip = v == "true" || v == "True" || v == "TRUE" || v == "yes" || v == "Yes" || v == "YES"
 	case "skip_reason":
 		s.SkipReason = v
 	}
@@ -702,10 +702,18 @@ func applyStepField(s *stepDef, k, v string) {
 func splitKV(s string) (string, string) {
 	for i, c := range s {
 		if c == ':' {
-			return s[:i], trimLeft(s[i+1:])
+			return s[:i], stripQuotes(trimLeft(s[i+1:]))
 		}
 	}
 	return s, ""
+}
+
+// stripQuotes removes a single layer of surrounding double or single quotes.
+func stripQuotes(s string) string {
+	if len(s) >= 2 && ((s[0] == '"' && s[len(s)-1] == '"') || (s[0] == '\'' && s[len(s)-1] == '\'')) {
+		return s[1 : len(s)-1]
+	}
+	return s
 }
 
 func splitLines(s string) []string {

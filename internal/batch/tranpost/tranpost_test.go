@@ -241,6 +241,120 @@ func TestRun_fixtureIntegration(t *testing.T) {
 	}
 }
 
+// TestRun_rejectBothOverlimitAndExpiredIsCode103 verifies COBOL precedence: both IFs run
+// independently and reason 103 (expired) overwrites 102 (overlimit) when both apply.
+func TestRun_rejectBothOverlimitAndExpiredIsCode103(t *testing.T) {
+	db, err := sqlite.Open(":memory:")
+	if err != nil {
+		t.Fatalf("open db: %v", err)
+	}
+	defer db.Close()
+	ctx := context.Background()
+
+	acctStore := sqlite.NewAccountStore(db)
+	xrefStore := sqlite.NewCardXrefStore(db)
+
+	if err := acctStore.Create(ctx, &domain.AccountRecord{
+		AcctID:              10000000099,
+		AcctActiveStatus:    "Y",
+		AcctCurrBal:         decimal.NewFromFloat(4900.00),
+		AcctCreditLimit:     decimal.NewFromFloat(5000.00),
+		AcctCashCreditLimit: decimal.NewFromFloat(1000.00),
+		AcctCurrCycCredit:   decimal.NewFromFloat(4900.00),
+		AcctExpirationDate:  "2020-01-01", // expired
+		AcctGroupID:         "GRP1      ",
+	}); err != nil {
+		t.Fatalf("create acct: %v", err)
+	}
+	if err := xrefStore.Create(ctx, &domain.CardXrefRecord{
+		XrefCardNum: "4111111111118888",
+		XrefCustID:  99,
+		XrefAcctID:  10000000099,
+	}); err != nil {
+		t.Fatalf("create xref: %v", err)
+	}
+
+	// Both conditions apply: overlimit (4900+200>5000) AND expired (2022 > 2020).
+	input := makeDalytranInput(t, "TRAN00000099    ", "PR", 1,
+		decimal.NewFromFloat(200.00), "4111111111118888", "2022-07-18 00:00:00.000000")
+
+	var rejects bytes.Buffer
+	s, err := Run(ctx, Config{DB: db, Input: bytes.NewReader(input), Rejects: &rejects})
+	if err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+	if s.Rejected != 1 {
+		t.Errorf("rejected=%d, want 1", s.Rejected)
+	}
+	reason := string(rejects.Bytes()[350:354])
+	if reason != "0103" {
+		t.Errorf("reject reason = %q, want \"0103\" (expired overwrites overlimit, CBTRN02C.cbl:407-420)", reason)
+	}
+}
+
+// TestRun_rerunIdempotent verifies that re-running the same daily file does not double-apply balances.
+func TestRun_rerunIdempotent(t *testing.T) {
+	db, err := sqlite.Open(":memory:")
+	if err != nil {
+		t.Fatalf("open db: %v", err)
+	}
+	defer db.Close()
+	ctx := context.Background()
+
+	acctStore := sqlite.NewAccountStore(db)
+	xrefStore := sqlite.NewCardXrefStore(db)
+
+	acct := &domain.AccountRecord{
+		AcctID:              10000000050,
+		AcctActiveStatus:    "Y",
+		AcctCurrBal:         decimal.NewFromFloat(100.00),
+		AcctCreditLimit:     decimal.NewFromFloat(5000.00),
+		AcctCashCreditLimit: decimal.NewFromFloat(1000.00),
+		AcctExpirationDate:  "2030-12-31",
+		AcctGroupID:         "GRP1      ",
+	}
+	if err := acctStore.Create(ctx, acct); err != nil {
+		t.Fatalf("create acct: %v", err)
+	}
+	if err := xrefStore.Create(ctx, &domain.CardXrefRecord{
+		XrefCardNum: "4111111111115050",
+		XrefCustID:  50,
+		XrefAcctID:  10000000050,
+	}); err != nil {
+		t.Fatalf("create xref: %v", err)
+	}
+
+	input := makeDalytranInput(t, "TRAN00000050    ", "PR", 1,
+		decimal.NewFromFloat(50.00), "4111111111115050", "2022-07-18 00:00:00.000000")
+
+	// First run: posts normally.
+	s1, err := Run(ctx, Config{DB: db, Input: bytes.NewReader(input)})
+	if err != nil {
+		t.Fatalf("first Run: %v", err)
+	}
+	if s1.Posted != 1 {
+		t.Errorf("first run posted=%d, want 1", s1.Posted)
+	}
+
+	// Second run with same data: dup detected before balance writes, no double-apply.
+	s2, err := Run(ctx, Config{DB: db, Input: bytes.NewReader(input)})
+	if err != nil {
+		t.Fatalf("second Run: %v", err)
+	}
+	if s2.Posted != 0 && s2.Rejected != 0 {
+		t.Logf("second run: posted=%d rejected=%d (dup skipped silently)", s2.Posted, s2.Rejected)
+	}
+
+	final, err := acctStore.Get(ctx, 10000000050)
+	if err != nil {
+		t.Fatalf("get acct: %v", err)
+	}
+	wantBal := decimal.NewFromFloat(150.00) // only applied once
+	if !final.AcctCurrBal.Equal(wantBal) {
+		t.Errorf("balance after re-run = %s, want %s (must not double-apply)", final.AcctCurrBal, wantBal)
+	}
+}
+
 // makeDalytranInput encodes a simple DailyTransactionRecord as 350 EBCDIC bytes.
 func makeDalytranInput(t *testing.T, id, typeCD string, catCD int64, amt decimal.Decimal, cardNum, origTS string) []byte {
 	t.Helper()

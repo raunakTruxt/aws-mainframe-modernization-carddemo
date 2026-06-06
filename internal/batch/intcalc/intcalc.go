@@ -24,6 +24,9 @@ import (
 
 var twelve = decimal.NewFromInt(1200)
 
+// discGroupDefault is the COBOL fallback group key (CVTRA02Y.cpy:6, X(10) space-padded).
+const discGroupDefault = "DEFAULT   "
+
 // Config holds the dependencies for the intcalc subcommand.
 type Config struct {
 	DB       *sql.DB
@@ -104,8 +107,8 @@ func Run(ctx context.Context, cfg Config) (Summary, error) {
 		for _, row := range g.rows {
 			dgRec, err := discStore.Get(ctx, acct.AcctGroupID, row.TrancatTypeCD, row.TrancatCode)
 			if err != nil {
-				// Try default group "DEFAULT   " as fallback (COBOL 1200-A-GET-DEFAULT-INT-RATE).
-				dgRec, err = discStore.Get(ctx, "DEFAULT", row.TrancatTypeCD, row.TrancatCode)
+				// Try default group as fallback (COBOL 1200-A-GET-DEFAULT-INT-RATE).
+				dgRec, err = discStore.Get(ctx, discGroupDefault, row.TrancatTypeCD, row.TrancatCode)
 				if err != nil {
 					continue // no rate configured, skip this category
 				}
@@ -114,12 +117,8 @@ func Run(ctx context.Context, cfg Config) (Summary, error) {
 				continue
 			}
 
-			// monthlyInt = (catBal * annualRate) / 1200
-			monthlyInt := row.TranCatBalance.Mul(dgRec.DisIntRate).Div(twelve)
-			monthlyInt = monthlyInt.RoundBank(2)
-			if monthlyInt.IsZero() {
-				continue
-			}
+			// monthlyInt = (catBal * annualRate) / 1200 — COBOL truncates (no ROUNDED, CBACT04C.cbl:464-465).
+			monthlyInt := row.TranCatBalance.Mul(dgRec.DisIntRate).Div(twelve).Truncate(2)
 			totalInterest = totalInterest.Add(monthlyInt)
 
 			// Write one interest transaction per category.
