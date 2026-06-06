@@ -8,6 +8,7 @@ package account
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -58,7 +59,8 @@ func (h *Handlers) GetView(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		msg := "Account not found."
 		if !errors.Is(err, repo.ErrNotFound) {
-			msg = "Error loading account: " + err.Error()
+			log.Printf("account GetByID error: %v", err)
+			msg = "Error loading account. Please try again."
 		}
 		layout.Render(w, pd.WithFlash(msg).WithBody(viewBody{AcctIDInput: acctIDStr}), viewContent)
 		return
@@ -147,7 +149,8 @@ func (h *Handlers) GetUpdate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		msg := "Account not found."
 		if !errors.Is(err, repo.ErrNotFound) {
-			msg = "Error loading account: " + err.Error()
+			log.Printf("account GetByID error: %v", err)
+			msg = "Error loading account. Please try again."
 		}
 		layout.Render(w, pd.WithFlash(msg).WithBody(updateBody{AcctIDInput: acctIDStr}), updateContent)
 		return
@@ -197,7 +200,12 @@ func (h *Handlers) PostUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.Service.Update(r.Context(), req); err != nil {
-		layout.Render(w, pd.WithFlash(err.Error()).WithBody(updateBody{AcctIDInput: acctIDStr, View: v, Form: form}), updateContent)
+		msg := err.Error()
+		if !account.IsValidationError(err) {
+			log.Printf("account Update error: %v", err)
+			msg = "Changes unsuccessful. Please try again."
+		}
+		layout.Render(w, pd.WithFlash(msg).WithBody(updateBody{AcctIDInput: acctIDStr, View: v, Form: form}), updateContent)
 		return
 	}
 
@@ -305,15 +313,22 @@ func buildUpdateRequest(acctID int64, r *http.Request) (account.UpdateRequest, e
 	}
 
 	// SSN: three separate fields assembled into 9-digit int64.
+	// Enforce exact widths before assembly to prevent corruption of the packed value.
 	ssnArea := strings.TrimSpace(r.FormValue("ssn_area"))
 	ssnGroup := strings.TrimSpace(r.FormValue("ssn_group"))
 	ssnSerial := strings.TrimSpace(r.FormValue("ssn_serial"))
-	area, e1 := strconv.ParseInt(ssnArea, 10, 64)
-	grp, e2 := strconv.ParseInt(ssnGroup, 10, 64)
-	ser, e3 := strconv.ParseInt(ssnSerial, 10, 64)
-	if e1 != nil || e2 != nil || e3 != nil {
-		return req, fmt.Errorf("SSN parts must be numeric")
+	if len(ssnArea) != 3 || !isNumeric(ssnArea) {
+		return req, fmt.Errorf("SSN area must be exactly 3 digits")
 	}
+	if len(ssnGroup) != 2 || !isNumeric(ssnGroup) {
+		return req, fmt.Errorf("SSN group must be exactly 2 digits")
+	}
+	if len(ssnSerial) != 4 || !isNumeric(ssnSerial) {
+		return req, fmt.Errorf("SSN serial must be exactly 4 digits")
+	}
+	area, _ := strconv.ParseInt(ssnArea, 10, 64)
+	grp, _ := strconv.ParseInt(ssnGroup, 10, 64)
+	ser, _ := strconv.ParseInt(ssnSerial, 10, 64)
 	req.SSN = area*1_000_000 + grp*10_000 + ser
 
 	req.FirstName = r.FormValue("first_name")

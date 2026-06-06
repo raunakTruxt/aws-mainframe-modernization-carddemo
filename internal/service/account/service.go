@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/shopspring/decimal"
@@ -74,11 +75,16 @@ func IsValidationError(err error) bool {
 	return errors.As(err, &ve)
 }
 
+// Transactor executes fn within a database transaction, rolling back on error.
+// The AccountRepository and CustomerRepository passed to fn are bound to the same tx.
+type Transactor func(ctx context.Context, fn func(repo.AccountRepository, repo.CustomerRepository) error) error
+
 // Service holds the business logic for account view and update operations.
 type Service struct {
 	accounts  repo.AccountRepository
 	customers repo.CustomerRepository
 	xref      repo.CardXrefRepository
+	transact  Transactor
 }
 
 // New constructs a Service.
@@ -86,8 +92,9 @@ func New(
 	acctRepo repo.AccountRepository,
 	custRepo repo.CustomerRepository,
 	xrefRepo repo.CardXrefRepository,
+	transact Transactor,
 ) *Service {
-	return &Service{accounts: acctRepo, customers: custRepo, xref: xrefRepo}
+	return &Service{accounts: acctRepo, customers: custRepo, xref: xrefRepo, transact: transact}
 }
 
 // GetByID fetches the account, its primary xref entry, and its associated
@@ -98,26 +105,20 @@ func (s *Service) GetByID(ctx context.Context, acctID int64) (*View, error) {
 		return nil, fmt.Errorf("account: GetByID: %w", err)
 	}
 
-	var cardNum string
-	var custID int64
 	xrefs, err := s.xref.GetByAccount(ctx, acctID)
 	if err != nil && !errors.Is(err, repo.ErrNotFound) {
 		return nil, fmt.Errorf("account: GetByID: xref: %w", err)
 	}
-	if len(xrefs) > 0 {
-		cardNum = xrefs[0].XrefCardNum
-		custID = xrefs[0].XrefCustID
+	if len(xrefs) == 0 {
+		return nil, fmt.Errorf("account: GetByID: no card xref for account %d: %w", acctID, repo.ErrNotFound)
 	}
 
-	var cust *domain.CustomerRecord
-	if custID > 0 {
-		cust, err = s.customers.Get(ctx, custID)
-		if err != nil && !errors.Is(err, repo.ErrNotFound) {
-			return nil, fmt.Errorf("account: GetByID: customer: %w", err)
-		}
+	cust, err := s.customers.Get(ctx, xrefs[0].XrefCustID)
+	if err != nil {
+		return nil, fmt.Errorf("account: GetByID: customer: %w", err)
 	}
 
-	return &View{Account: acct, Customer: cust, CardNum: cardNum}, nil
+	return &View{Account: acct, Customer: cust, CardNum: xrefs[0].XrefCardNum}, nil
 }
 
 // Update validates the request, re-reads both records, applies changes, and
@@ -128,68 +129,70 @@ func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
 		return err
 	}
 
-	acct, err := s.accounts.Get(ctx, req.AcctID)
-	if err != nil {
-		return fmt.Errorf("account: Update: %w", err)
-	}
-
+	// Read xref outside the transaction (read-only; custID is stable).
 	xrefs, err := s.xref.GetByAccount(ctx, req.AcctID)
 	if err != nil || len(xrefs) == 0 {
-		return fmt.Errorf("account: Update: xref not found for account %d", req.AcctID)
+		return fmt.Errorf("account: Update: xref not found for account %d: %w", req.AcctID, repo.ErrNotFound)
 	}
-	cust, err := s.customers.Get(ctx, xrefs[0].XrefCustID)
-	if err != nil {
-		return fmt.Errorf("account: Update: customer: %w", err)
-	}
+	custID := xrefs[0].XrefCustID
 
-	// Apply updates to the account record.
-	acct.AcctActiveStatus = strings.ToUpper(req.ActiveStatus)
-	acct.AcctCreditLimit = req.CreditLimit
-	acct.AcctCashCreditLimit = req.CashCreditLimit
-	acct.AcctCurrBal = req.CurrBal
-	acct.AcctCurrCycCredit = req.CurrCycCredit
-	acct.AcctCurrCycDebit = req.CurrCycDebit
-	acct.AcctOpenDate = req.OpenDate
-	acct.AcctExpirationDate = req.ExpirationDate
-	acct.AcctReissueDate = req.ReissueDate
-	acct.AcctGroupID = req.GroupID
+	// Wrap both writes in a single transaction (mirrors COACTUPC SYNCPOINT ROLLBACK).
+	return s.transact(ctx, func(accts repo.AccountRepository, custs repo.CustomerRepository) error {
+		acct, err := accts.Get(ctx, req.AcctID)
+		if err != nil {
+			return fmt.Errorf("account: Update: %w", err)
+		}
+		cust, err := custs.Get(ctx, custID)
+		if err != nil {
+			return fmt.Errorf("account: Update: customer: %w", err)
+		}
 
-	// Apply updates to the customer record.
-	cust.CustFirstName = req.FirstName
-	cust.CustMiddleName = req.MiddleName
-	cust.CustLastName = req.LastName
-	cust.CustAddrLine1 = req.AddrLine1
-	cust.CustAddrLine2 = req.AddrLine2
-	cust.CustAddrLine3 = req.AddrLine3
-	cust.CustAddrStateCode = strings.ToUpper(req.AddrStateCode)
-	cust.CustAddrZip = req.AddrZip
-	cust.CustAddrCountryCode = strings.ToUpper(req.AddrCountryCode)
-	cust.CustPhoneNum1 = req.PhoneNum1
-	cust.CustPhoneNum2 = req.PhoneNum2
-	cust.CustSSN = req.SSN
-	cust.CustGovtIssuedID = req.GovtIssuedID
-	cust.CustDOB = req.DOB
-	cust.CustEFTAccountID = req.EFTAccountID
-	cust.CustPriCardHolderInd = strings.ToUpper(req.PriCardHolderInd)
-	cust.CustFICOCreditScore = req.FICOCreditScore
+		// Account fields — status is case-sensitive (COBOL rejects lowercase).
+		acct.AcctActiveStatus = req.ActiveStatus
+		acct.AcctCreditLimit = req.CreditLimit
+		acct.AcctCashCreditLimit = req.CashCreditLimit
+		acct.AcctCurrBal = req.CurrBal
+		acct.AcctCurrCycCredit = req.CurrCycCredit
+		acct.AcctCurrCycDebit = req.CurrCycDebit
+		acct.AcctOpenDate = req.OpenDate
+		acct.AcctExpirationDate = req.ExpirationDate
+		acct.AcctReissueDate = req.ReissueDate
+		acct.AcctGroupID = req.GroupID
 
-	// Write account first; if customer write fails we cannot roll back the
-	// account write in SQLite without a transaction, but both stores use the
-	// same *sql.DB so a wrapper transaction is possible if the caller needs it.
-	if err := s.accounts.Update(ctx, acct); err != nil {
-		return fmt.Errorf("account: Update: write account: %w", err)
-	}
-	if err := s.customers.Update(ctx, cust); err != nil {
-		return fmt.Errorf("account: Update: write customer: %w", err)
-	}
-	return nil
+		// Customer fields — PriCardHolderInd is case-sensitive.
+		cust.CustFirstName = req.FirstName
+		cust.CustMiddleName = req.MiddleName
+		cust.CustLastName = req.LastName
+		cust.CustAddrLine1 = req.AddrLine1
+		cust.CustAddrLine2 = req.AddrLine2
+		cust.CustAddrLine3 = req.AddrLine3
+		cust.CustAddrStateCode = strings.ToUpper(req.AddrStateCode)
+		cust.CustAddrZip = req.AddrZip
+		cust.CustAddrCountryCode = strings.ToUpper(req.AddrCountryCode)
+		cust.CustPhoneNum1 = req.PhoneNum1
+		cust.CustPhoneNum2 = req.PhoneNum2
+		cust.CustSSN = req.SSN
+		cust.CustGovtIssuedID = req.GovtIssuedID
+		cust.CustDOB = req.DOB
+		cust.CustEFTAccountID = req.EFTAccountID
+		cust.CustPriCardHolderInd = req.PriCardHolderInd
+		cust.CustFICOCreditScore = req.FICOCreditScore
+
+		if err := accts.Update(ctx, acct); err != nil {
+			return fmt.Errorf("account: Update: write account: %w", err)
+		}
+		if err := custs.Update(ctx, cust); err != nil {
+			return fmt.Errorf("account: Update: write customer: %w", err)
+		}
+		return nil
+	})
 }
 
 // validate mirrors COACTUPC 1200-EDIT-MAP-FIELDS.
 // Returns the first *ValidationError found, mirroring COBOL single-error behaviour.
 func validate(req UpdateRequest) error {
-	// Account status: must be Y or N.
-	status := strings.ToUpper(strings.TrimSpace(req.ActiveStatus))
+	// Account status: must be Y or N (case-sensitive, mirrors COBOL 1220-EDIT-YESNO).
+	status := strings.TrimSpace(req.ActiveStatus)
 	if status == "" {
 		return &ValidationError{"Account Status must be supplied."}
 	}
@@ -308,7 +311,7 @@ func validate(req UpdateRequest) error {
 		return &ValidationError{"EFT Account Id must not be zero."}
 	}
 
-	phi := strings.ToUpper(strings.TrimSpace(req.PriCardHolderInd))
+	phi := strings.TrimSpace(req.PriCardHolderInd)
 	if phi == "" {
 		return &ValidationError{"Primary Card Holder must be supplied."}
 	}
@@ -326,7 +329,9 @@ func validate(req UpdateRequest) error {
 	return nil
 }
 
-// validateDate checks that s is a non-empty YYYY-MM-DD calendar date.
+// validateDate checks s is a non-empty YYYY-MM-DD calendar date within the
+// COBOL-supported century window 1900-2099 (CSUTLDPY.cpy EDIT-DATE-CCYYMMDD).
+// For "Date of Birth" it additionally rejects dates that are not strictly before today.
 func validateDate(s, label string) error {
 	s = strings.TrimSpace(s)
 	if s == "" {
@@ -339,8 +344,25 @@ func validateDate(s, label string) error {
 	y, errY := strconv.Atoi(parts[0])
 	m, errM := strconv.Atoi(parts[1])
 	d, errD := strconv.Atoi(parts[2])
-	if errY != nil || errM != nil || errD != nil || y < 1 || m < 1 || m > 12 || d < 1 || d > 31 {
+	if errY != nil || errM != nil || errD != nil {
 		return &ValidationError{label + " is not a valid date."}
+	}
+	// Century window: COBOL accepts only 19xx (1900-1999) and 20xx (2000-2099).
+	if y < 1900 || y > 2099 {
+		return &ValidationError{label + " century is not valid (must be 1900-2099)."}
+	}
+	// time.Date normalizes invalid dates (e.g. Feb 31 → Mar 3); compare back to
+	// detect invalid month/day combinations including leap-year violations.
+	t := time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.UTC)
+	if t.Year() != y || int(t.Month()) != m || t.Day() != d {
+		return &ValidationError{label + " is not a valid date."}
+	}
+	// DOB must be strictly before today (CSUTLDPY.cpy:341-372).
+	if label == "Date of Birth" {
+		today := time.Now().UTC().Truncate(24 * time.Hour)
+		if !t.Before(today) {
+			return &ValidationError{label + " cannot be in the future."}
+		}
 	}
 	return nil
 }
@@ -403,8 +425,8 @@ func validatePhone(phone, label string) error {
 	if areaInt == 0 {
 		return &ValidationError{label + ": Area code must be supplied."}
 	}
-	// Valid North American area codes don't start with 0 or 1.
-	if area[0] == '0' || area[0] == '1' {
+	// Area code must be in CSLKPCDY VALID-GENERAL-PURP-CODE allowlist (411 NPAs).
+	if !validNANPAreaCode[area] {
 		return &ValidationError{label + ": Not valid North America general purpose area code"}
 	}
 
@@ -537,6 +559,60 @@ var validStateZipCombo = func() map[string]bool {
 		for _, p := range prefixes {
 			m[state+p] = true
 		}
+	}
+	return m
+}()
+
+// validNANPAreaCode is the VALID-GENERAL-PURP-CODE set from CSLKPCDY.cpy (lines 521-930).
+// Keys are 3-digit area-code strings. The VALID-EASY-RECOG-AREA-CODE block is excluded
+// per the COBOL edit, which keys off GENERAL-PURP only (COACTUPC.cbl:2296-2312).
+var validNANPAreaCode = func() map[string]bool {
+	codes := []string{
+		"201", "202", "203", "204", "205", "206", "207", "208", "209", "210",
+		"212", "213", "214", "215", "216", "217", "218", "219", "220", "223",
+		"224", "225", "226", "228", "229", "231", "234", "236", "239", "240",
+		"242", "246", "248", "249", "250", "251", "252", "253", "254", "256",
+		"260", "262", "264", "267", "268", "269", "270", "272", "276", "279",
+		"281", "284", "289", "301", "302", "303", "304", "305", "306", "307",
+		"308", "309", "310", "312", "313", "314", "315", "316", "317", "318",
+		"319", "320", "321", "323", "325", "326", "330", "331", "332", "334",
+		"336", "337", "339", "340", "341", "343", "345", "346", "347", "351",
+		"352", "360", "361", "364", "365", "367", "368", "380", "385", "386",
+		"401", "402", "403", "404", "405", "406", "407", "408", "409", "410",
+		"412", "413", "414", "415", "416", "417", "418", "419", "423", "424",
+		"425", "430", "431", "432", "434", "435", "437", "438", "440", "441",
+		"442", "443", "445", "447", "448", "450", "458", "463", "464", "469",
+		"470", "473", "474", "475", "478", "479", "480", "484", "501", "502",
+		"503", "504", "505", "506", "507", "508", "509", "510", "512", "513",
+		"514", "515", "516", "517", "518", "519", "520", "530", "531", "534",
+		"539", "540", "541", "548", "551", "559", "561", "562", "563", "564",
+		"567", "570", "571", "572", "573", "574", "575", "579", "580", "581",
+		"582", "585", "586", "587", "601", "602", "603", "604", "605", "606",
+		"607", "608", "609", "610", "612", "613", "614", "615", "616", "617",
+		"618", "619", "620", "623", "626", "628", "629", "630", "631", "636",
+		"639", "640", "641", "646", "647", "649", "650", "651", "656", "657",
+		"658", "659", "660", "661", "662", "664", "667", "669", "670", "671",
+		"672", "678", "680", "681", "682", "683", "684", "689", "701", "702",
+		"703", "704", "705", "706", "707", "708", "709", "712", "713", "714",
+		"715", "716", "717", "718", "719", "720", "721", "724", "725", "726",
+		"727", "731", "732", "734", "737", "740", "742", "743", "747", "753",
+		"754", "757", "758", "760", "762", "763", "765", "767", "769", "770",
+		"771", "772", "773", "774", "775", "778", "779", "780", "781", "782",
+		"784", "785", "786", "787", "801", "802", "803", "804", "805", "806",
+		"807", "808", "809", "810", "812", "813", "814", "815", "816", "817",
+		"818", "819", "820", "825", "826", "828", "829", "830", "831", "832",
+		"838", "839", "840", "843", "845", "847", "848", "849", "850", "854",
+		"856", "857", "858", "859", "860", "862", "863", "864", "865", "867",
+		"868", "869", "870", "872", "873", "876", "878", "901", "902", "903",
+		"904", "905", "906", "907", "908", "909", "910", "912", "913", "914",
+		"915", "916", "917", "918", "919", "920", "925", "928", "929", "930",
+		"931", "934", "936", "937", "938", "939", "940", "941", "943", "945",
+		"947", "948", "949", "951", "952", "954", "956", "959", "970", "971",
+		"972", "973", "978", "979", "980", "983", "984", "985", "986", "989",
+	}
+	m := make(map[string]bool, len(codes))
+	for _, c := range codes {
+		m[c] = true
 	}
 	return m
 }()

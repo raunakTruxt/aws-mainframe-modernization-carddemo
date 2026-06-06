@@ -57,7 +57,17 @@ func newTestEnv(t *testing.T) *testEnv {
 		t.Fatalf("seed users: %v", err)
 	}
 
-	acctSvc := svcaccount.New(acctRepo, custRepo, xrefRepo)
+	acctSvc := svcaccount.New(acctRepo, custRepo, xrefRepo, svcaccount.Transactor(func(ctx context.Context, fn func(repo.AccountRepository, repo.CustomerRepository) error) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		if err := fn(sqlite.NewAccountStore(tx), sqlite.NewCustomerStore(tx)); err != nil {
+			tx.Rollback()
+			return err
+		}
+		return tx.Commit()
+	}))
 	accountHandlers := webaccount.NewHandlers(acctSvc)
 
 	// Use the real webauth.Handlers (same pattern as the auth package's own tests).

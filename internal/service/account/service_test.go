@@ -2,6 +2,7 @@ package account_test
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"testing"
 
@@ -13,88 +14,18 @@ import (
 	svc "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/service/account"
 )
 
-func setupService(t *testing.T) *svc.Service {
-	t.Helper()
-	db, err := sqlite.Open(":memory:")
-	if err != nil {
-		t.Fatalf("open db: %v", err)
+func makeTestTransactor(db *sql.DB) svc.Transactor {
+	return func(ctx context.Context, fn func(repo.AccountRepository, repo.CustomerRepository) error) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		if err := fn(sqlite.NewAccountStore(tx), sqlite.NewCustomerStore(tx)); err != nil {
+			tx.Rollback()
+			return err
+		}
+		return tx.Commit()
 	}
-	t.Cleanup(func() { db.Close() })
-	return svc.New(
-		sqlite.NewAccountStore(db),
-		sqlite.NewCustomerStore(db),
-		sqlite.NewCardXrefStore(db),
-	)
-}
-
-func seedFixtures(t *testing.T, s *svc.Service) (acctID, custID int64) {
-	t.Helper()
-	// We need to seed via the repos directly; open a second set of stores.
-	db, err := sqlite.Open(":memory:")
-	if err != nil {
-		t.Fatalf("open db for seed: %v", err)
-	}
-	t.Cleanup(func() { db.Close() })
-
-	acctStore := sqlite.NewAccountStore(db)
-	custStore := sqlite.NewCustomerStore(db)
-	xrefStore := sqlite.NewCardXrefStore(db)
-	svc2 := svc.New(acctStore, custStore, xrefStore)
-
-	ctx := context.Background()
-	acct := &domain.AccountRecord{
-		AcctID:              70000001001,
-		AcctActiveStatus:    "Y",
-		AcctCurrBal:         decimal.RequireFromString("100.00"),
-		AcctCreditLimit:     decimal.RequireFromString("5000.00"),
-		AcctCashCreditLimit: decimal.RequireFromString("1000.00"),
-		AcctOpenDate:        "2020-01-15",
-		AcctExpirationDate:  "2025-12-31",
-		AcctReissueDate:     "2023-01-15",
-		AcctCurrCycCredit:   decimal.RequireFromString("0"),
-		AcctCurrCycDebit:    decimal.RequireFromString("0"),
-		AcctAddrZip:         "90210",
-		AcctGroupID:         "GRP001",
-	}
-	if err := acctStore.Create(ctx, acct); err != nil {
-		t.Fatalf("create account: %v", err)
-	}
-
-	cust := &domain.CustomerRecord{
-		CustID:              1001,
-		CustFirstName:       "John",
-		CustMiddleName:      "A",
-		CustLastName:        "Doe",
-		CustAddrLine1:       "123 Main St",
-		CustAddrLine2:       "Apt 4",
-		CustAddrLine3:       "Beverly Hills",
-		CustAddrStateCode:   "CA",
-		CustAddrCountryCode: "USA",
-		CustAddrZip:         "90210",
-		CustPhoneNum1:       "(310)555-1234",
-		CustPhoneNum2:       "",
-		CustSSN:             123456789,
-		CustGovtIssuedID:    "DL12345678",
-		CustDOB:             "1980-06-15",
-		CustEFTAccountID:    "1234567890",
-		CustPriCardHolderInd: "Y",
-		CustFICOCreditScore: 750,
-	}
-	if err := custStore.Create(ctx, cust); err != nil {
-		t.Fatalf("create customer: %v", err)
-	}
-
-	xref := &domain.CardXrefRecord{
-		XrefCardNum: "4111111111111111",
-		XrefCustID:  1001,
-		XrefAcctID:  70000001001,
-	}
-	if err := xrefStore.Create(ctx, xref); err != nil {
-		t.Fatalf("create xref: %v", err)
-	}
-
-	_ = svc2
-	return acct.AcctID, cust.CustID
 }
 
 // openSeededService returns a service + repos over the same in-memory DB.
@@ -121,7 +52,7 @@ func openSeededService(t *testing.T) (*svc.Service, *sqlite.AccountStore, *sqlit
 		t.Fatalf("seed xref: %v", err)
 	}
 
-	return svc.New(acctStore, custStore, xrefStore), acctStore, custStore, xrefStore
+	return svc.New(acctStore, custStore, xrefStore, makeTestTransactor(db)), acctStore, custStore, xrefStore
 }
 
 func sampleAccount(id int64) *domain.AccountRecord {
@@ -439,4 +370,123 @@ func TestIsValidationError(t *testing.T) {
 	if svc.IsValidationError(errors.New("other")) {
 		t.Error("expected IsValidationError to return false for generic error")
 	}
+}
+
+// ── Date validation ───────────────────────────────────────────────────────────
+
+func TestUpdate_Date_Feb31_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.OpenDate = "2021-02-31"
+	mustFailValidation(t, s, req, "Open Date")
+}
+
+func TestUpdate_Date_Apr31_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.OpenDate = "2021-04-31"
+	mustFailValidation(t, s, req, "Open Date")
+}
+
+func TestUpdate_Date_NonLeapFeb29_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.OpenDate = "2021-02-29" // 2021 is not a leap year
+	mustFailValidation(t, s, req, "Open Date")
+}
+
+func TestUpdate_Date_LeapFeb29_Accepted(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.OpenDate = "2020-02-29" // 2020 is a leap year
+	if err := s.Update(context.Background(), req); err != nil {
+		t.Fatalf("expected leap-year Feb 29 to be accepted: %v", err)
+	}
+}
+
+func TestUpdate_Date_YearBefore1900_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.OpenDate = "1850-01-01"
+	mustFailValidation(t, s, req, "Open Date")
+}
+
+func TestUpdate_Date_YearAfter2099_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.OpenDate = "2200-01-01"
+	mustFailValidation(t, s, req, "Open Date")
+}
+
+func TestUpdate_DOB_FutureRejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.DOB = "2099-12-31" // far future
+	mustFailValidation(t, s, req, "Date of Birth")
+}
+
+// ── Phone area code allowlist ─────────────────────────────────────────────────
+
+func TestUpdate_Phone_Area211_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.PhoneNum1 = "(211)555-0100" // 211 is not in VALID-GENERAL-PURP-CODE
+	mustFailValidation(t, s, req, "Phone Number 1")
+}
+
+func TestUpdate_Phone_Area411_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.PhoneNum1 = "(411)555-0100"
+	mustFailValidation(t, s, req, "Phone Number 1")
+}
+
+func TestUpdate_Phone_Area555_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.PhoneNum1 = "(555)555-0100" // 555 is NOT in VALID-GENERAL-PURP-CODE
+	mustFailValidation(t, s, req, "Phone Number 1")
+}
+
+func TestUpdate_Phone_Area911_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.PhoneNum1 = "(911)555-0100"
+	mustFailValidation(t, s, req, "Phone Number 1")
+}
+
+func TestUpdate_Phone_Area201_Accepted(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.PhoneNum1 = "(201)555-0100"
+	if err := s.Update(context.Background(), req); err != nil {
+		t.Fatalf("expected area 201 to be accepted: %v", err)
+	}
+}
+
+func TestUpdate_Phone_Area212_Accepted(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.PhoneNum1 = "(212)555-0100"
+	if err := s.Update(context.Background(), req); err != nil {
+		t.Fatalf("expected area 212 to be accepted: %v", err)
+	}
+}
+
+// ── Status case-sensitivity ───────────────────────────────────────────────────
+
+func TestUpdate_Status_Lowercase_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.ActiveStatus = "y"
+	mustFailValidation(t, s, req, "Account Status must be Y or N")
+}
+
+// ── PriCardHolderInd case-sensitivity ─────────────────────────────────────────
+
+func TestUpdate_PriCardHolder_Lowercase_Rejected(t *testing.T) {
+	s, _, _, _ := openSeededService(t)
+	req := validUpdateRequest(70000001001)
+	req.PriCardHolderInd = "y"
+	mustFailValidation(t, s, req, "Primary Card Holder")
 }

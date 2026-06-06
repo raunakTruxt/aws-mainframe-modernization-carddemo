@@ -57,7 +57,17 @@ func main() {
 	cancel()
 
 	// Service layer.
-	accountSvc := svcaccount.New(acctRepo, custRepo, xrefRepo)
+	accountSvc := svcaccount.New(acctRepo, custRepo, xrefRepo, svcaccount.Transactor(func(ctx context.Context, fn func(repo.AccountRepository, repo.CustomerRepository) error) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		if err := fn(sqlite.NewAccountStore(tx), sqlite.NewCustomerStore(tx)); err != nil {
+			tx.Rollback()
+			return err
+		}
+		return tx.Commit()
+	}))
 
 	// HTTP handlers.
 	authHandlers := webauth.NewHandlers(authSvc)
