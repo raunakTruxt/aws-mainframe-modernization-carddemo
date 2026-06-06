@@ -1,0 +1,30 @@
+docs/security/findings.md
+  s_1e053980f726b6::t_d8cdb43e3670c9 12
+  s_1e053980f726b6::t_8c6985a985628e 302-318
+  s_1e053980f726b6::t_1689df528eba12 34,38,40
+  s_1e053980f726b6::t_e7261ae6fdfd7f 4,10
+  s_1e053980f726b6::t_3d03d35f93a61b 51,55,57
+  s_1e053980f726b6::t_949805399305ce 236,243,247
+go.mod
+  s_1e053980f726b6::t_59bece18b80a72 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "818b11d95eaa923023b18b49ce7344fb4db9c9cd",
+  "prompts": {},
+  "sessions": {
+    "s_1e053980f726b6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2078f4a7-39cd-4a59-9ba2-59c409b00e74",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 31,
+      "total_deletions": 29,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
