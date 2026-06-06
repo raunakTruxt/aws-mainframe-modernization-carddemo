@@ -1,0 +1,45 @@
+internal/batch/tranreport/tranreport.go
+  s_32a3fd06ab8851::t_bedf9b297f49e9 93
+  s_32a3fd06ab8851::t_ddb1ffd00a746c 71-73,75,78
+  s_32a3fd06ab8851::t_a75163c86a08f9 31-32
+  s_32a3fd06ab8851::t_6ea9ee9a1e50a6 151-153,161
+internal/batch/intcalc/intcalc_test.go
+  s_32a3fd06ab8851::t_3d674608ade993 199-331
+internal/batch/tranpost/tranpost_test.go
+  s_32a3fd06ab8851::t_8582a482af9f30 244-357
+internal/batch/intcalc/intcalc.go
+  s_32a3fd06ab8851::t_129d53ea34cd24 110-111
+  s_32a3fd06ab8851::t_d27be9b4ee745a 27-29
+  s_32a3fd06ab8851::t_dbf09c128f4a4b 120-121
+internal/batch/tranpost/tranpost.go
+  s_32a3fd06ab8851::t_04ff5373dd4a69 165-170
+  s_32a3fd06ab8851::t_e010236f25f1f3 122-125,128-129,137-138,141
+  s_32a3fd06ab8851::t_be9e59b334e501 224
+cmd/batch/main.go
+  s_32a3fd06ab8851::t_379e0b8802ed8e 669
+  s_32a3fd06ab8851::t_626f38a65fc084 696
+  s_32a3fd06ab8851::t_ec3dbc50c694c9 705,711-716
+internal/batch/tranreport/tranreport_test.go
+  s_32a3fd06ab8851::t_1cf62404f2b72c 54
+  s_32a3fd06ab8851::t_c33311b7f071cd 107-108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "c94d2fafbc16ad42cae29de5f4dee9741d16bc62",
+  "prompts": {},
+  "sessions": {
+    "s_32a3fd06ab8851": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d8f3e60-39af-48c9-a890-832c759be1c5",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 296,
+      "total_deletions": 35,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
