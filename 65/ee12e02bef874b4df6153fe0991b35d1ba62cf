@@ -1,0 +1,48 @@
+internal/web/account/handlers.go
+  s_fad5935d154caa::t_8f3f66bc19d483 203-208
+  s_fad5935d154caa::t_54d28605dc5ddd 11
+  s_fad5935d154caa::t_33ff095febf89e 316,320-327,329-331
+  s_fad5935d154caa::t_f25948a9e5204f 152-153
+  s_fad5935d154caa::t_ca746b80846cfa 62-63
+internal/service/account/service_test.go
+  s_fad5935d154caa::t_1cd388639c000b 55
+  s_fad5935d154caa::t_ffc377faecf891 17-27
+  s_fad5935d154caa::t_9b7a70272d4b78 374-492
+  s_fad5935d154caa::t_d40e07a159c99b 5
+internal/web/account/handlers_test.go
+  s_fad5935d154caa::t_8248cc79d522f0 60-70
+cmd/web/main.go
+  s_fad5935d154caa::t_09b7e5352dd881 60-70
+internal/service/customer/service_test.go
+  s_fad5935d154caa::t_d5c233a2a03a84 1-99
+internal/service/account/service.go
+  s_fad5935d154caa::t_a3ffe4bc43c7d6 565-618
+  s_fad5935d154caa::t_fc8014ef49f2ea 314
+  s_fad5935d154caa::t_0f21aef775cf09 132,135,137-188
+  s_fad5935d154caa::t_1b226c32baa86e 78-81,87,95,97
+  s_fad5935d154caa::t_6263d4146ffe62 194-195
+  s_fad5935d154caa::t_0bd447ae30d340 112-113,116-118,121
+  s_fad5935d154caa::t_a974ab22048888 428-429
+  s_fad5935d154caa::t_3b96db6f314293 11
+  s_fad5935d154caa::t_57843b410b25d2 332-334,347-357,360-365
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "65ee12e02bef874b4df6153fe0991b35d1ba62cf",
+  "prompts": {},
+  "sessions": {
+    "s_fad5935d154caa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff6e6443-df9e-4583-89c2-fcdf4d6a286a",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 421,
+      "total_deletions": 161,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
