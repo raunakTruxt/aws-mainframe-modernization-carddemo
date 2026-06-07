@@ -73,7 +73,7 @@ func main() {
 	authHandlers := webauth.NewHandlers(authSvc)
 	accountHandlers := webaccount.NewHandlers(accountSvc)
 
-	router := web.NewRouter(authHandlers, accountHandlers, sessionStore, auditSink)
+	router := web.NewRouter(authHandlers, accountHandlers, nil, sessionStore, auditSink)
 
 	log.Printf("carddemo-web listening on %s", addr)
 	if err := http.ListenAndServe(addr, router); err != nil {
