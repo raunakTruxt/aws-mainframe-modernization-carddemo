@@ -1,0 +1,46 @@
+internal/web/reports/handlers.go
+  s_465f4e9902fd9f::t_a8b4e14667c791 1-121
+internal/report/testdata/statement_golden.txt
+  s_465f4e9902fd9f::t_5e028e8b32f2d2 1-22
+internal/report/report.go
+  s_465f4e9902fd9f::t_a2bbee67bb1975 1-96
+internal/web/router.go
+  s_465f4e9902fd9f::t_222b7ad965bd06 32
+  s_465f4e9902fd9f::t_e5a4500174c654 15
+  s_465f4e9902fd9f::t_ca9da77dbd6e45 85-90
+cmd/batch/main.go
+  s_465f4e9902fd9f::t_9d0f444ff2c01c 1-2,4,6-7,11-12,15-30,34-325
+internal/report/text_test.go
+  s_465f4e9902fd9f::t_70973e5e2d4c5c 1-103
+cmd/web/main.go
+  s_465f4e9902fd9f::t_8fb4dd027ad71b 76
+internal/report/queue.go
+  s_465f4e9902fd9f::t_26877c4027f6b9 1-102
+internal/web/menu/handlers_test.go
+  s_465f4e9902fd9f::t_cce3f13983422c 41
+internal/report/text.go
+  s_465f4e9902fd9f::t_db559a15a4e35c 1-302,306,308-351
+  s_465f4e9902fd9f::t_8e1f835eff3da4 303-305,307
+.gitignore
+  s_465f4e9902fd9f::t_75a5a1cf43f212 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "2dfbab1c59e89e75a9acc4ab7d47aa3550493e25",
+  "prompts": {},
+  "sessions": {
+    "s_465f4e9902fd9f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4167c937-6b1a-4454-8085-838843755bf7",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 2408,
+      "total_deletions": 45,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
