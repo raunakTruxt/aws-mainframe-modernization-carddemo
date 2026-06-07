@@ -12,6 +12,7 @@ import (
 	webauth "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/auth"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/layout"
 	"github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/menu"
+	webreports "github.com/aws-samples/aws-mainframe-modernization-carddemo/internal/web/reports"
 )
 
 // NewRouter builds and returns the chi router for the CardDemo web server.
@@ -28,6 +29,7 @@ import (
 func NewRouter(
 	authH *webauth.Handlers,
 	accountH *webaccount.Handlers,
+	reportsH *webreports.Handlers,
 	store auth.SessionStore,
 	auditSink audit.Sink,
 ) http.Handler {
@@ -80,7 +82,12 @@ func NewRouter(
 		r.Get("/transactions", stubHandler("Transaction List"))
 		r.Get("/transactions/view", stubHandler("Transaction View"))
 		r.Get("/transactions/add", stubHandler("Transaction Add"))
-		r.Get("/reports", stubHandler("Transaction Reports"))
+		if reportsH != nil {
+			r.Get("/reports", reportsH.GetReports)
+			r.Post("/reports", reportsH.PostReports)
+		} else {
+			r.Get("/reports", stubHandler("Transaction Reports"))
+		}
 		r.Get("/billing", stubHandler("Bill Payment"))
 		r.Get("/pending", stubHandler("Pending Authorization View"))
 	})
