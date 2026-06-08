@@ -7,3 +7,4 @@ batch-app/markers/*
 .DS_Store
 **/.DS_Store
 *.sqlite
+/out/

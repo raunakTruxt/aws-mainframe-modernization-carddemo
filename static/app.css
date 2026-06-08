@@ -1,0 +1,164 @@
+/* CardDemo web UI — minimal stylesheet.
+   Colour palette is drawn from the 3270 BMS ATTRB colours:
+   BLUE(labels), YELLOW(titles), GREEN(success), RED(error), TURQUOISE(prompt). */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  background: #000;
+  color: #aaa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header (rows 1-2 of the 24×80 frame) ─────────────────────────────────── */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px;
+  background: #001a33;
+  color: #6af;
+  border-bottom: 1px solid #224;
+}
+.app-header .header-center .page-title {
+  color: #ff0;
+  font-weight: bold;
+}
+.app-header .label { color: #6af; margin-left: 12px; }
+.app-header .value { color: #6af; margin-left: 4px; }
+
+/* ── Nav bar (logged-in state) ────────────────────────────────────────────── */
+.app-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 12px;
+  background: #001122;
+  color: #6af;
+  border-bottom: 1px solid #224;
+}
+.nav-user { color: #6af; }
+
+.logout-form { display: inline; }
+.btn-signoff {
+  background: transparent;
+  border: 1px solid #6af;
+  color: #6af;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 1px 8px;
+}
+.btn-signoff:hover { background: #6af; color: #000; }
+
+/* ── Flash / ERRMSG (row 23) ──────────────────────────────────────────────── */
+.app-flash {
+  padding: 4px 12px;
+  background: #000;
+  color: #f44;
+  font-weight: bold;
+}
+
+/* ── Main content area ────────────────────────────────────────────────────── */
+.app-main {
+  flex: 1;
+  padding: 12px;
+}
+
+/* ── Footer (row 24) ──────────────────────────────────────────────────────── */
+.app-footer {
+  padding: 4px 12px;
+  background: #001a33;
+  color: #ff0;
+  border-top: 1px solid #224;
+  font-size: 12px;
+}
+
+/* ── Menu screens (COMEN01 / COADM01) ─────────────────────────────────────── */
+.menu-screen { max-width: 600px; }
+
+.menu-options {
+  border-collapse: collapse;
+  margin-bottom: 24px;
+  width: 100%;
+}
+.menu-options tr:hover { background: #001a33; }
+.opt-num {
+  color: #6af;
+  padding: 2px 8px 2px 0;
+  text-align: right;
+  width: 32px;
+}
+.opt-name { color: #6af; padding: 2px 0; }
+
+.menu-prompt {
+  color: #0cc;
+  margin-top: 8px;
+}
+.menu-prompt label { color: #0cc; margin-right: 8px; }
+.menu-prompt input[type="number"] {
+  width: 48px;
+  font-family: inherit;
+  font-size: inherit;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  padding: 0 4px;
+}
+.menu-prompt button {
+  margin-left: 12px;
+  background: transparent;
+  border: 1px solid #0cc;
+  color: #0cc;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 1px 10px;
+}
+.menu-prompt button:hover { background: #0cc; color: #000; }
+
+/* ── Stub screen ──────────────────────────────────────────────────────────── */
+.stub-screen { color: #0c0; padding: 24px 0; }
+.stub-notice { margin-bottom: 12px; }
+.stub-screen a { color: #6af; }
+
+/* ── Auth / admin screens ────────────────────────────────────────────────── */
+h1 { color: #ff0; margin-bottom: 16px; font-size: 1.1em; }
+h2 { color: #6af; margin: 16px 0 8px; font-size: 1em; }
+
+label { display: block; margin-bottom: 8px; color: #6af; }
+input[type="text"],
+input[type="password"],
+select {
+  background: #000;
+  color: #fff;
+  border: none;
+  border-bottom: 1px solid #6af;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 2px 4px;
+  margin-left: 8px;
+}
+button[type="submit"] {
+  margin-top: 12px;
+  background: transparent;
+  border: 1px solid #0c0;
+  color: #0c0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 2px 14px;
+}
+button[type="submit"]:hover { background: #0c0; color: #000; }
+
+table { border-collapse: collapse; width: 100%; margin-bottom: 16px; }
+th { color: #ff0; border-bottom: 1px solid #444; padding: 4px 8px; text-align: left; }
+td { color: #6af; padding: 3px 8px; }
+tr:hover td { background: #001122; }
+a { color: #6af; }
