@@ -1,0 +1,61 @@
+.gitignore
+  s_d97a659ff97400::t_9b27590bc3df10 10
+internal/web/layout/layout.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-104
+internal/service/customer/service_test.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-99
+static/app.css
+  s_d97a659ff97400::t_9b27590bc3df10 1-164
+internal/report/text_test.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-103
+internal/service/account/service.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-618
+go.mod
+  s_d97a659ff97400::t_9b27590bc3df10 6
+internal/report/testdata/statement_golden.txt
+  s_d97a659ff97400::t_9b27590bc3df10 1-22
+cmd/web/main.go
+  s_d97a659ff97400::t_9b27590bc3df10 6,10-19,28-76,79
+internal/web/menu/handlers_test.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-313
+internal/web/account/handlers_test.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-455
+internal/service/account/service_test.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-492
+internal/web/router.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-136
+internal/report/report.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-96
+internal/web/account/handlers.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-625
+internal/web/menu/handlers.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-140
+internal/report/queue.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-102
+internal/web/reports/handlers.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-121
+internal/report/text.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-351
+internal/service/customer/service.go
+  s_d97a659ff97400::t_9b27590bc3df10 1-50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "9dd519682b5017a2469cc2781b3b559d9a854e16",
+  "prompts": {},
+  "sessions": {
+    "s_d97a659ff97400": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "53f8c60a-fb18-4587-8de8-5b80d5ef873f",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 4054,
+      "total_deletions": 7,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
