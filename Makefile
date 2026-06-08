@@ -1,4 +1,4 @@
-.PHONY: build test lint vet tidy run-web run-batch seed-sqlite clean help
+.PHONY: build test lint vet tidy run-web run-batch seed-sqlite goldens smoke clean help
 
 # Set RACE=1 to enable the race detector (requires CGO; skip for sqlite-backed tests).
 RACE   ?=
@@ -35,6 +35,14 @@ run-batch:
 ## seed-sqlite: load EBCDIC fixtures into carddemo.sqlite (pass -wipe=false to preserve existing data)
 seed-sqlite:
 	go run ./cmd/seed
+
+## goldens: regenerate all parity golden files from the canonical EBCDIC data
+goldens:
+	go test -count=1 ./tests/parity/... -args -update
+
+## smoke: build binaries, seed a temp DB, run the batch pipeline, and health-check the web server
+smoke:
+	bash scripts/smoke.sh
 
 ## clean: remove build artifacts
 clean:

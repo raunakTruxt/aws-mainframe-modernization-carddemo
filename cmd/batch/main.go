@@ -74,6 +74,8 @@ func dispatch(ctx context.Context, subcmd string, args []string) error {
 		return cmdTranPost(ctx, args)
 	case "tran-report":
 		return cmdTranReport(ctx, args)
+	case "statements":
+		return cmdStatements(ctx, args)
 	case "export":
 		return cmdExport(ctx, args)
 	case "import":
@@ -106,6 +108,7 @@ Subcommands:
   tran-validate  Validate + post daily trans  (CBTRN01C / POSTTRAN.jcl)
   tran-post      Post daily transactions      (CBTRN02C / POSTTRAN.jcl)
   tran-report    Transaction report           (CBTRN03C / TRANREPT.jcl)
+  statements     Generate account statements  (CBSTM03A / CREASTMT.JCL)
   export         Export all to flat file      (CBEXPORT / CBEXPORT.jcl)
   import         Import from flat file        (CBIMPORT / CBIMPORT.jcl)
   wait           Sleep N centiseconds         (COBSWAIT / WAITSTEP.jcl)
