@@ -1,0 +1,57 @@
+tests/parity/tranpost_test.go
+  s_d97a659ff97400::t_a7045d55ee8153 6,49,51,63,68
+  s_d97a659ff97400::t_34f79df46f0d92 1-5,7-48,50,52-62,64-67,69-74
+cmd/batch/statements.go
+  s_d97a659ff97400::t_6b6602611a9edf 1-180
+tests/parity/tranreport_test.go
+  s_d97a659ff97400::t_b075479a34a6e1 1-33
+e2e/e2e_test.go
+  s_d97a659ff97400::t_59efc8eef1542f 1-344,346-371,373-480
+  s_d97a659ff97400::t_9f2b923baae871 345
+  s_d97a659ff97400::t_95dfd7bc566d96 372
+tests/parity/statements_test.go
+  s_d97a659ff97400::t_bdec622a78ce78 1-5,7-23,25,27-45,48,50,69,148
+  s_d97a659ff97400::t_7a237982667479 6,24,26,46-47,49,51-68,70-147
+tests/parity/golden/intcalc.txt
+  s_d97a659ff97400::t_5a488fb5ba7e1a 1-50
+tests/parity/golden/post.txt
+  s_d97a659ff97400::t_5a488fb5ba7e1a 1-50
+tests/parity/golden/statements.txt
+  s_d97a659ff97400::t_5a488fb5ba7e1a 1-1250
+tests/parity/golden/tran-report.txt
+  s_d97a659ff97400::t_5a488fb5ba7e1a 1-1187
+tests/parity/intcalc_test.go
+  s_d97a659ff97400::t_c097203763b671 1-28
+scripts/smoke.sh
+  s_d97a659ff97400::t_30d290690d23a5 31,34-40
+  s_d97a659ff97400::t_69d40b3050737f 1-30,32-33,41-73
+Makefile
+  s_d97a659ff97400::t_6ef41ed01d97f1 1
+  s_d97a659ff97400::t_7c25b831fcda4e 39-43,46
+  s_d97a659ff97400::t_a257cf71e9edd8 44-45
+cmd/batch/main.go
+  s_d97a659ff97400::t_23afba76c974ea 111
+  s_d97a659ff97400::t_2dbe0912c87304 77-78
+tests/parity/helper_test.go
+  s_d97a659ff97400::t_8ed72990c71c1d 1-329
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "6fa29596da33c8190b1e3cbf06eee1d1f3ed57af",
+  "prompts": {},
+  "sessions": {
+    "s_d97a659ff97400": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "53f8c60a-fb18-4587-8de8-5b80d5ef873f",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 3975,
+      "total_deletions": 82,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
