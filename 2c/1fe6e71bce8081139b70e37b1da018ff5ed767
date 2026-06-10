@@ -1,0 +1,26 @@
+docs/operations/runbook.md
+  s_b50d4e501062b8::t_7c40c6c08a6965 173
+  s_b50d4e501062b8::t_be9d0e8ccf9db7 326
+  s_b50d4e501062b8::t_6af130abbcb192 238
+  s_b50d4e501062b8::t_c584f3fce8a2ec 198
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "2c1fe6e71bce8081139b70e37b1da018ff5ed767",
+  "prompts": {},
+  "sessions": {
+    "s_b50d4e501062b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "021ec622-c2a1-4968-873d-3e8904905d52",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 4,
+      "total_deletions": 4,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
