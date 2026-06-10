@@ -1,0 +1,33 @@
+docs/migration-guide.md
+  s_b50d4e501062b8::t_4fea7c3fb5b742 12-17
+  s_b50d4e501062b8::t_b42061f029efa1 124-168
+docs/operations/runbook.md
+  s_b50d4e501062b8::t_f823353d7375fd 23
+  s_b50d4e501062b8::t_4ba9c442606d4e 54-55,58
+README.md
+  s_b50d4e501062b8::t_173bf3fd57e47e 67-70
+  s_b50d4e501062b8::t_3f4416f4530be9 169
+  s_b50d4e501062b8::t_a1071f68d78291 7
+  s_b50d4e501062b8::t_8b3695cf28d1e3 93
+  s_b50d4e501062b8::t_f39c035a0701ad 52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "a6da949c614f7a546cbc33431cc8d7c58fdbdc02",
+  "prompts": {},
+  "sessions": {
+    "s_b50d4e501062b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "021ec622-c2a1-4968-873d-3e8904905d52",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "raunakTruxt <raunak@truxt.ai>",
+      "total_additions": 64,
+      "total_deletions": 15,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
